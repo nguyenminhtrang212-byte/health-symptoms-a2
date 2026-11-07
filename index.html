@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tự học A2 · Health: Illnesses & Symptoms</title>
+<style>
+:root{--bg:#EAF6F7;--paper:#fff;--ink:#10304A;--muted:#557085;--line:#CFE3E6;--sea:#0E7C86;--sea2:#2BB3B1;--seaSoft:#D5F0EF;--coral:#EF5B43;--sun:#FFC24B;--sunSoft:#FFF1CF;--ok:#1E8F52;--okSoft:#DDF3E6;--bad:#D23B2A;--badSoft:#FBE1DD}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.wrap{max-width:860px;margin:0 auto;padding:14px}
+.hero{background:linear-gradient(135deg,var(--sea),var(--sea2));color:#fff;border-radius:18px;padding:18px 20px;margin-bottom:12px}
+.hero h1{margin:0 0 4px;font-size:22px}.hero p{margin:0;opacity:.92;font-size:14px}
+.tabs{display:flex;gap:6px;overflow-x:auto;position:sticky;top:0;background:var(--bg);padding:6px 0;z-index:5}
+.tab{flex:0 0 auto;border:2px solid var(--line);background:var(--paper);border-radius:999px;padding:7px 14px;font-weight:600;font-size:14px}
+.tab[aria-selected=true]{background:var(--sea);border-color:var(--sea);color:#fff}
+.panel{display:none}.panel.on{display:block}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:12px 0}
+.card h2{margin:0 0 6px;font-size:19px}.card h3{margin:0 0 6px;font-size:16px}
+.hint{color:var(--muted);font-size:14px;margin:4px 0}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.b{border:2px solid var(--line);background:var(--paper);border-radius:12px;padding:8px 14px;font-weight:600}
+.b.primary{background:var(--sea);border-color:var(--sea);color:#fff}
+.b.coral{background:var(--coral);border-color:var(--coral);color:#fff}
+.b:disabled{opacity:.45;cursor:not-allowed}
+.seg .b[aria-pressed=true]{background:var(--seaSoft);border-color:var(--sea)}
+.fcard{min-height:200px;border:3px solid var(--sea2);border-radius:20px;background:var(--paper);padding:20px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;cursor:pointer;user-select:none}
+.fcard.back{background:var(--sunSoft);border-color:var(--sun)}
+.fcard .tag{font-size:12px;font-weight:700;color:var(--sea);background:var(--seaSoft);border-radius:999px;padding:2px 10px;margin-bottom:10px}
+.fcard .big{font-size:28px;font-weight:800;line-height:1.25}.fcard .big.long{font-size:22px}
+.fcard .ipa{color:var(--muted);margin-top:4px}.fcard .ex{margin-top:10px;font-style:italic}
+.bar{height:10px;background:var(--line);border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:var(--sea2);width:0}
+.q{border:2px solid var(--line);border-radius:14px;padding:12px;margin:10px 0;background:var(--paper)}
+.q.right{border-color:var(--ok);background:var(--okSoft)}.q.wrong{border-color:var(--bad);background:var(--badSoft)}
+.qt{font-weight:600;margin-bottom:8px}
+.opt{display:block;width:100%;text-align:left;border:2px solid var(--line);background:var(--paper);border-radius:12px;padding:9px 12px;margin:6px 0}
+.opt.sel{border-color:var(--sea);background:var(--seaSoft)}.opt.ok{border-color:var(--ok);background:var(--okSoft)}.opt.no{border-color:var(--bad);background:var(--badSoft)}
+.expl{font-size:14px;color:var(--muted);margin-top:6px}
+.tile{border:2px solid var(--sea2);background:var(--seaSoft);border-radius:10px;padding:6px 12px;font-weight:600}
+.drop{min-height:50px;border:2px dashed var(--line);border-radius:12px;padding:8px;margin:8px 0;display:flex;flex-wrap:wrap;gap:6px;background:#fafdfd}
+textarea,input[type=text]{width:100%;border:2px solid var(--line);border-radius:12px;padding:9px 12px;font:inherit;background:#fff;color:var(--ink)}
+textarea{min-height:90px;resize:vertical}
+.chip{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font-size:14px;margin:3px 3px 3px 0}
+.chip.sug{border-style:dashed;cursor:pointer}.chip.mine{background:var(--seaSoft);border-color:var(--sea2)}
+.chip.on{background:var(--okSoft);border-color:var(--ok)}
+.diff span.m{color:var(--bad);font-weight:700;text-decoration:underline}.diff span.o{color:var(--ok);font-weight:600}
+.score{display:inline-block;border-radius:999px;padding:1px 10px;font-weight:700;font-size:14px;margin-right:6px}
+.score.hi{background:var(--okSoft);color:var(--ok)}.score.mid{background:var(--sunSoft);color:#8a5a00}.score.lo{background:var(--badSoft);color:var(--bad)}
+.tip{background:var(--sunSoft);border-radius:12px;padding:8px 12px;font-size:14px;margin:8px 0}
+.warn{background:var(--badSoft);border-radius:12px;padding:8px 12px;margin:8px 0}
+table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;font-size:14px}
+#gate{position:fixed;inset:0;background:rgba(16,48,74,.6);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+#gate[hidden],[hidden]{display:none!important}
+.gbox{background:#fff;border-radius:18px;padding:22px;max-width:380px;width:100%;text-align:center}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:9px 16px;border-radius:12px;z-index:60;max-width:90%;font-size:14px}
+</style>
+</head>
+<body>
+<div id="gate"><div class="gbox"><div style="font-size:44px">🩺</div><h2>Xin chào!</h2><p>Em gõ tên của em để bắt đầu nhé.</p><input type="text" id="gateName" placeholder="Họ và tên" autocomplete="name"><p></p><button class="b primary" id="gateGo">Bắt đầu học</button></div></div>
+
+<div class="wrap">
+  <div class="hero"><h1>🩺 Health: Illnesses & Symptoms</h1><p>Tự học A2 · Sức khỏe – Bệnh tật & Triệu chứng · Có giải thích tiếng Việt</p></div>
+  <div class="tabs" role="tablist">
+    <button class="tab" data-p="p1" aria-selected="true">① Thẻ & 20 câu</button>
+    <button class="tab" data-p="p2" aria-selected="false">② Sắp xếp & Chép</button>
+    <button class="tab" data-p="p3" aria-selected="false">③ Brainstorm</button>
+    <button class="tab" data-p="p4" aria-selected="false">④ Viết thư & Ghi âm</button>
+    <button class="tab" data-p="p5" aria-selected="false">📨 Nộp bài</button>
+  </div>
+
+  <!-- PHẦN 1 -->
+  <section class="panel on" id="p1">
+    <div class="card">
+      <h2>Học bằng thẻ (flashcards)</h2>
+      <p class="hint">Bấm vào thẻ để lật. Thẻ được xáo ngẫu nhiên giữa <b>từ</b>, <b>cụm</b> và <b>câu dài</b>. Bấm 🔊 để nghe.</p>
+      <div class="row seg" id="filt">
+        <button class="b" data-f="all" aria-pressed="true">Tất cả</button>
+        <button class="b" data-f="word" aria-pressed="false">Từ</button>
+        <button class="b" data-f="phrase" aria-pressed="false">Cụm</button>
+        <button class="b" data-f="long" aria-pressed="false">Câu dài</button>
+        <button class="b" id="shuf">🔀 Xáo thẻ</button>
+      </div>
+      <p></p>
+      <div class="fcard" id="fc"></div>
+      <div class="row" style="margin-top:10px;justify-content:space-between">
+        <button class="b" id="prev">← Trước</button>
+        <button class="b primary" id="say">🔊 Nghe</button>
+        <button class="b" id="slow">🐢 Chậm</button>
+        <button class="b" id="next">Sau →</button>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button class="b" id="unk">🔁 Chưa thuộc</button>
+        <button class="b primary" id="kn">✅ Đã thuộc</button>
+        <span class="hint" id="fcCount"></span>
+      </div>
+      <div class="bar" style="margin-top:8px"><i id="fcBar"></i></div>
+    </div>
+
+    <div class="card">
+      <h2>20 câu hỏi</h2>
+      <p class="hint">Thứ tự câu và đáp án được xáo ngẫu nhiên. Điểm tính theo <b>lần chọn đầu tiên</b>; chọn sai vẫn được chọn lại để học.</p>
+      <div id="quizScore" class="row"></div>
+      <div id="quizBox"></div>
+      <button class="b" id="quizRedo">↺ Làm lại và xáo trộn</button>
+    </div>
+  </section>
+
+  <!-- PHẦN 2 -->
+  <section class="panel" id="p2">
+    <div class="card">
+      <h2>A. Sắp xếp từ thành câu (5 câu)</h2>
+      <p class="hint">Bấm các từ theo đúng thứ tự để ghép thành câu. Bấm từ trong khung để trả lại.</p>
+      <div id="ordBox"></div>
+    </div>
+    <div class="card">
+      <h2>B. Chép lại câu (5 câu)</h2>
+      <p class="hint">Nhìn câu mẫu, gõ lại đúng từng chữ (chú ý chữ hoa và dấu câu). Bấm “Che câu mẫu” để thử thách: nghe rồi gõ.</p>
+      <div id="cpBox"></div>
+    </div>
+  </section>
+
+  <!-- PHẦN 3 -->
+  <section class="panel" id="p3">
+    <div class="card">
+      <h2>Brainstorm: Em nên làm gì?</h2>
+      <p class="hint">Với mỗi triệu chứng, hãy <b>nghĩ ra ít nhất 3 việc nên làm</b>: bấm gợi ý hoặc gõ ý của em. Sau đó viết <b>2 câu lời khuyên</b> bằng <i>You should… / You shouldn't…</i></p>
+      <div id="brBox"></div>
+    </div>
+  </section>
+
+  <!-- PHẦN 4 -->
+  <section class="panel" id="p4">
+    <div class="card">
+      <h2>Viết thư cho bạn</h2>
+      <p><b>Write a letter to a friend.</b> Nói về <b>thời tiết thay đổi ở nơi em sống</b>, <b>mọi người bị ốm</b>, và em thấy <b>việc phòng bệnh quan trọng</b>. Hãy <b>nhắc người bạn</b> giữ gìn sức khỏe.</p>
+      <div class="tip">💬 Khung gợi ý: <i>Hi …, / How are you? The weather in my town is … / Many people are sick because … / I think … is important. You should … / Please remember to … / Write back soon! / Your friend, …</i></div>
+      <p class="hint">Gợi ý cụm: <span id="needChips"></span></p>
+      <textarea id="letter" placeholder="Hi …,"></textarea>
+      <div class="tip" id="lcount"></div>
+      <ul id="lcheck" style="list-style:none;padding:0;margin:6px 0"></ul>
+      <button class="b" id="lmodel" disabled>💡 Xem thư mẫu (mở khi em đã viết đủ)</button>
+      <div class="tip" id="lmodelBox" hidden></div>
+    </div>
+    <div class="card">
+      <h2>Đọc lại thư và ghi âm</h2>
+      <p class="hint">Đọc to lá thư em vừa viết. Nghe lại, thấy ổn thì bấm <b>Gửi bản ghi này</b>.</p>
+      <div class="row">
+        <button class="b coral" id="recBtn">⏺ Bắt đầu ghi âm</button>
+        <span id="recTime" class="hint"></span>
+      </div>
+      <div id="recOut" hidden>
+        <p></p><audio id="recAudio" controls style="width:100%"></audio>
+        <div class="row" style="margin-top:8px"><button class="b primary" id="recSend">📤 Gửi bản ghi này</button><span id="recMsg" class="hint"></span></div>
+        <div id="recScore" class="hint"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NỘP BÀI -->
+  <section class="panel" id="p5">
+    <div class="card">
+      <h2>Nộp bài cho thầy/cô</h2>
+      <p>Họ và tên: <input type="text" id="stuName" style="max-width:320px"></p>
+      <div id="sumBox"></div>
+      <button class="b primary" id="submitBtn">📨 Nộp bài cho thầy/cô</button>
+      <p id="submitMsg"></p>
+      <p class="warn" id="noUrl" hidden>⚙️ Trang chưa được cài link nhận bài.</p>
+    </div>
+  </section>
+</div>
+<div id="toast" hidden></div>
+
+<script>
+/* ===== NOI DUNG BAI: DATA START ===== */
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwnf8X3_Xfk9F_8HQtBwSFU_s28sRjxKb0aFaHCA4ybmMJvgaztBAbdvaFzITdbVXBt/exec';
+const LESSON='health-symptoms-a2';
+
+const WORDS=[
+ {en:'a cold',ipa:'/ə kəʊld/',vi:'cảm lạnh',ex:'I have a cold.'},
+ {en:'the flu',ipa:'/ðə fluː/',vi:'cúm',ex:'She has the flu.'},
+ {en:'a fever',ipa:'/ə ˈfiːvər/',vi:'sốt',ex:'He has a fever.'},
+ {en:'a cough',ipa:'/ə kɒf/',vi:'ho',ex:'I have a bad cough.'},
+ {en:'a sore throat',ipa:'/ə sɔːr θrəʊt/',vi:'đau họng',ex:'I have a sore throat.'},
+ {en:'a runny nose',ipa:'/ə ˈrʌni nəʊz/',vi:'sổ mũi',ex:'My brother has a runny nose.'},
+ {en:'a stomachache',ipa:'/ə ˈstʌməkeɪk/',vi:'đau bụng',ex:'I have a stomachache.'},
+ {en:'food poisoning',ipa:'/fuːd ˈpɔɪzənɪŋ/',vi:'ngộ độc thực phẩm',ex:'He has food poisoning.'},
+ {en:'a headache',ipa:'/ə ˈhedeɪk/',vi:'đau đầu',ex:'I have a headache.'},
+ {en:'a toothache',ipa:'/ə ˈtuːθeɪk/',vi:'đau răng',ex:'She has a toothache.'},
+ {en:'a backache',ipa:'/ə ˈbækeɪk/',vi:'đau lưng',ex:'My dad has a backache.'},
+ {en:'to feel dizzy',ipa:'/tə fiːl ˈdɪzi/',vi:'thấy chóng mặt',ex:'I feel dizzy.'},
+ {en:'to feel sick',ipa:'/tə fiːl sɪk/',vi:'thấy buồn nôn / không khỏe',ex:'I feel sick.'},
+ {en:'to be tired',ipa:'/tə bi ˈtaɪərd/',vi:'mệt mỏi',ex:"I'm very tired."},
+ {en:'to sneeze',ipa:'/tə sniːz/',vi:'hắt hơi',ex:'He sneezes a lot.'},
+ {en:'to hurt',ipa:'/tə hɜːrt/',vi:'đau, làm đau',ex:'My leg hurts.'}
+];
+const PHRASES=[
+ {en:'take medicine',vi:'uống thuốc',ex:'You should take medicine.'},
+ {en:'see a doctor',vi:'đi khám bác sĩ',ex:'You should see a doctor.'},
+ {en:'see a dentist',vi:'đi khám nha sĩ',ex:'You should see a dentist.'},
+ {en:'stay at home',vi:'ở nhà',ex:'She should stay at home.'},
+ {en:'get some rest',vi:'nghỉ ngơi',ex:'You should get some rest.'},
+ {en:'drink warm water',vi:'uống nước ấm',ex:'Drink warm water every day.'},
+ {en:"don't eat spicy food",vi:'không ăn đồ cay',ex:"You shouldn't eat spicy food."},
+ {en:'wash your hands',vi:'rửa tay',ex:'Wash your hands before you eat.'}
+];
+const LONG=[
+ {en:'I have a fever and a cough, so I should stay at home.',vi:'Tôi bị sốt và ho nên tôi nên ở nhà.'},
+ {en:"What's the matter? I have a sore throat.",vi:'Bạn bị sao vậy? Tôi bị đau họng.'},
+ {en:'You should see a dentist because you have a toothache.',vi:'Bạn nên đi khám nha sĩ vì bạn bị đau răng.'},
+ {en:"He has the flu, so he shouldn't go to school.",vi:'Cậu ấy bị cúm nên không nên đi học.'},
+ {en:'My head hurts and I feel dizzy.',vi:'Tôi bị đau đầu và thấy chóng mặt.'},
+ {en:'You should drink warm water and get some rest.',vi:'Bạn nên uống nước ấm và nghỉ ngơi.'},
+ {en:'She ate bad food, so she has a stomachache.',vi:'Cô ấy ăn đồ hỏng nên bị đau bụng.'},
+ {en:'When the weather changes, many people catch a cold.',vi:'Khi thời tiết thay đổi, nhiều người bị cảm lạnh.'}
+];
+
+const QZ=[
+ {id:'q1',t:'Từ',q:'“Đau họng” nói bằng tiếng Anh là gì?',o:['a sore throat','a stomachache','a runny nose'],a:0,x:'sore throat = đau họng; stomachache = đau bụng; runny nose = sổ mũi.'},
+ {id:'q2',t:'Từ',q:'“a fever” nghĩa là gì?',o:['ho','sốt','hắt hơi'],a:1,x:'fever /ˈfiːvər/ = sốt. Ho là cough.'},
+ {id:'q3',t:'Từ',q:'My tooth hurts. I have a ______.',o:['headache','backache','toothache'],a:2,x:'tooth + ache = toothache (đau răng).'},
+ {id:'q4',t:'Từ',q:'“to sneeze” nghĩa là gì?',o:['hắt hơi','ho','nghỉ ngơi'],a:0,x:'sneeze /sniːz/ = hắt hơi, ví dụ “Achoo!”.'},
+ {id:'q5',t:'Từ',q:'“a runny nose” nghĩa là gì?',o:['nghẹt mũi hoàn toàn','sổ mũi','đau mũi'],a:1,x:'runny nose = nước mũi chảy, tức là sổ mũi.'},
+ {id:'q6',t:'Từ',q:'He ate bad fish. He has food ______.',o:['poisoning','fever','dizzy'],a:0,x:'food poisoning = ngộ độc thực phẩm.'},
+ {id:'q7',t:'Từ',q:'The room is turning. I feel ______.',o:['dizzy','cough','toothache'],a:0,x:'feel + tính từ: feel dizzy = thấy chóng mặt.'},
+ {id:'q8',t:'Từ',q:'My head ______.',o:['is hurt','hurts','has hurt'],a:1,x:'hurt là động từ chính: My head hurts. Không dùng “is hurt”.'},
+ {id:'q9',t:'Cụm',q:'“take medicine” nghĩa là gì?',o:['uống thuốc','đi khám bác sĩ','ở nhà'],a:0,x:'take medicine = uống thuốc.'},
+ {id:'q10',t:'Cụm',q:'“see a doctor” nghĩa là gì?',o:['gọi điện cho bạn','đi khám bác sĩ','mua thuốc'],a:1,x:'see a doctor = đi khám bác sĩ.'},
+ {id:'q11',t:'Cụm',q:'“get some rest” nghĩa là gì?',o:['ăn nhiều hơn','tập thể dục','nghỉ ngơi'],a:2,x:'rest = nghỉ ngơi.'},
+ {id:'q12',t:'Cụm',q:'You should ______ warm water.',o:['drink','to drink','drinking'],a:0,x:'Sau should dùng động từ nguyên mẫu, không có “to”.'},
+ {id:'q13',t:'Cụm',q:'“stay at home” nghĩa là gì?',o:['đi học','ở nhà','đi chơi'],a:1,x:'stay at home = ở nhà.'},
+ {id:'q14',t:'Cụm',q:"“You shouldn't eat spicy food.” nghĩa là gì?",o:['Bạn nên ăn đồ cay.','Bạn không nên ăn đồ cay.','Bạn không thích đồ cay.'],a:1,x:"shouldn't = should not = không nên."},
+ {id:'q15',t:'Câu dài',q:'Câu nào dịch đúng: “Tôi bị đau đầu và thấy mệt”?',o:['I am headache and I feel tired.','I have a headache and I feel tired.','I have headache and I am feel tired.'],a:1,x:'have + a headache; feel + tính từ (tired).'},
+ {id:'q16',t:'Câu dài',q:"“What's the matter?” Câu trả lời nào đúng?",o:['I am a cold.','I have a sore throat.','I hurt throat.'],a:1,x:'Nói bị bệnh: I have + bệnh/triệu chứng.'},
+ {id:'q17',t:'Câu dài',q:'I have a toothache. Lời khuyên nào đúng?',o:['You should to go swimming.','You shouldn\'t see a dentist.','You should see a dentist.'],a:2,x:'You should + V (nguyên mẫu). Đau răng thì nên đi khám nha sĩ.'},
+ {id:'q18',t:'Câu dài',q:'Câu nào đúng?',o:['She has a fever, so she should stay at home.','She have a fever, so she should stays at home.','She has fever, so she should to stay at home.'],a:0,x:'She + has; should + stay (không s, không to); a fever cần mạo từ a.'},
+ {id:'q19',t:'Câu dài',q:'He has the flu, so he ______ go to school.',o:['should','shouldn\'t','doesn\'t should'],a:1,x:'Bị cúm thì không nên đi học: shouldn\'t go. Không nói “doesn\'t should”.'},
+ {id:'q20',t:'Câu dài',q:'Câu nào đúng?',o:['My back is hurt, so I should carry heavy bags.','My back hurts, so I shouldn\'t carry heavy bags.','My back hurts, so I should to carry heavy bags.'],a:1,x:'Đau lưng thì không nên mang vác nặng: shouldn\'t carry.'}
+];
+
+const ORD=[
+ {id:'o1',en:'I have a sore throat and a fever.',alt:['I have a fever and a sore throat.'],vi:'Tôi bị đau họng và sốt.'},
+ {id:'o2',en:'You should drink warm water and get some rest.',alt:['You should get some rest and drink warm water.'],vi:'Bạn nên uống nước ấm và nghỉ ngơi.'},
+ {id:'o3',en:'My brother has a bad cough.',alt:[],vi:'Em trai tôi bị ho nặng.'},
+ {id:'o4',en:"She shouldn't eat spicy food today.",alt:[],vi:'Hôm nay cô ấy không nên ăn đồ cay.'},
+ {id:'o5',en:"What's the matter with you?",alt:[],vi:'Bạn bị sao vậy?'}
+];
+const CP=[
+ {id:'c1',en:'I have a headache, so I feel tired.',vi:'Tôi bị đau đầu nên thấy mệt.'},
+ {id:'c2',en:'He has a toothache and he should see a dentist.',vi:'Cậu ấy bị đau răng và nên đi khám nha sĩ.'},
+ {id:'c3',en:'The weather changes, so many people get sick.',vi:'Thời tiết thay đổi nên nhiều người bị ốm.'},
+ {id:'c4',en:'You should wash your hands and wear a warm jacket.',vi:'Bạn nên rửa tay và mặc áo khoác ấm.'},
+ {id:'c5',en:'Please take care of your health.',vi:'Hãy giữ gìn sức khỏe nhé.'}
+];
+const BR=[
+ {id:'sore',em:'😣',vi:'Đau họng',en:'a sore throat',sug:['drink warm water','gargle with salt water','rest your voice','avoid cold drinks','eat soft food','see a doctor'],
+  model:"You should drink warm water. You shouldn't drink cold water."},
+ {id:'fever',em:'🤒',vi:'Bị sốt',en:'a fever',sug:['take medicine','drink a lot of water','stay at home','wear light clothes','get some rest','see a doctor'],
+  model:'You should stay at home and get some rest. You should see a doctor if the fever is very high.'},
+ {id:'tooth',em:'🦷',vi:'Đau răng',en:'a toothache',sug:['see a dentist','brush your teeth gently','rinse with warm salt water','don\'t eat sweet food','don\'t drink very hot or cold drinks','take medicine'],
+  model:"You should see a dentist. You shouldn't eat sweet food."}
+];
+const LETTER={min:60,max:110,need:['weather','sick','should','because','important'],
+ model:"Hi Lan,\nHow are you? The weather in my town is changing. It is cold in the morning and hot in the afternoon, so many people are sick. My brother has a fever and my neighbor has a bad cough.\nI think health is very important. You should wear a warm jacket and wash your hands often. You should drink warm water and get enough rest, too. Please remember to take care of yourself because the weather is not stable.\nWrite back soon!\nYour friend,\nNam"};
+/* ===== NOI DUNG BAI: DATA END ===== */
+
+/* ---------- tiện ích ---------- */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KEY='hsA2:'+LESSON+':';
+function load(k,d){try{const v=localStorage.getItem(KEY+k);return v==null?d:JSON.parse(v);}catch(e){return d;}}
+function store(k,v){try{localStorage.setItem(KEY+k,JSON.stringify(v));}catch(e){}}
+const ST=Object.assign({known:{},quiz:{},ord:{},cp:{},cpText:{},br:{},letter:''},load('st',{}));
+const save=()=>store('st',ST);
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function toast(t,ms=3000){const e=$('#toast');e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,ms);}
+const wc=s=>String(s||'').trim().split(/\s+/).filter(Boolean).length;
+
+/* ---------- đọc to (giọng trình duyệt) ---------- */
+let VOICE=null;
+function pickVoice(){if(!window.speechSynthesis)return;const vs=speechSynthesis.getVoices();VOICE=vs.find(v=>/en[-_]US/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null;}
+if(window.speechSynthesis){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
+function say(t,rate){
+  if(!window.speechSynthesis){toast('Trình duyệt này không đọc được. Hãy dùng Chrome hoặc Safari.');return;}
+  speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=VOICE?VOICE.lang:'en-US';if(VOICE)u.voice=VOICE;u.rate=rate||0.85;speechSynthesis.speak(u);
+}
+
+/* ---------- tab ---------- */
+$$('.tab').forEach(t=>t.onclick=()=>{
+  $$('.tab').forEach(x=>x.setAttribute('aria-selected',x===t));
+  $$('.panel').forEach(p=>p.classList.toggle('on',p.id===t.dataset.p));
+  if(window.speechSynthesis)speechSynthesis.cancel();
+  if(t.dataset.p==='p5')renderSummary();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+/* ---------- PHẦN 1: thẻ ---------- */
+const DECK=[
+ ...WORDS.map(w=>({k:'w:'+w.en,type:'word',en:w.en,vi:w.vi,ipa:w.ipa,ex:w.ex})),
+ ...PHRASES.map(p=>({k:'p:'+p.en,type:'phrase',en:p.en,vi:p.vi,ex:p.ex})),
+ ...LONG.map(l=>({k:'l:'+l.en,type:'long',en:l.en,vi:l.vi}))
+];
+const TYPE_VI={word:'TỪ',phrase:'CỤM',long:'CÂU DÀI'};
+let cur=[],ci=0,flipped=false,filt='all';
+function buildDeck(){cur=shuffle(DECK.filter(c=>filt==='all'||c.type===filt));ci=0;flipped=false;drawCard();}
+function drawCard(){
+  const c=cur[ci],fc=$('#fc');
+  fc.classList.toggle('back',flipped);
+  if(!flipped){
+    fc.innerHTML=`<span class="tag">${TYPE_VI[c.type]}</span><div class="big ${c.type==='long'?'long':''}">${esc(c.en)}</div><p class="hint">Bấm để lật thẻ</p>`;
+  }else{
+    fc.innerHTML=`<span class="tag">${TYPE_VI[c.type]} · NGHĨA</span><div class="big ${c.type==='long'?'long':''}">${esc(c.vi)}</div>${c.ipa?`<div class="ipa">${esc(c.ipa)}</div>`:''}${c.ex?`<div class="ex">${esc(c.ex)}</div>`:''}`;
+  }
+  const n=cur.filter(x=>ST.known[x.k]).length;
+  $('#fcCount').textContent=`Thẻ ${ci+1}/${cur.length} · đã thuộc ${n}/${cur.length}`+(ST.known[c.k]?' · thẻ này: ✅':'');
+  $('#fcBar').style.width=(cur.length?n/cur.length*100:0)+'%';
+}
+$('#fc').onclick=()=>{flipped=!flipped;drawCard();};
+$('#next').onclick=()=>{ci=(ci+1)%cur.length;flipped=false;drawCard();};
+$('#prev').onclick=()=>{ci=(ci-1+cur.length)%cur.length;flipped=false;drawCard();};
+$('#say').onclick=()=>say(cur[ci].en);
+$('#slow').onclick=()=>say(cur[ci].en,0.5);
+$('#kn').onclick=()=>{ST.known[cur[ci].k]=1;save();$('#next').click();};
+$('#unk').onclick=()=>{delete ST.known[cur[ci].k];save();$('#next').click();};
+$('#shuf').onclick=buildDeck;
+$$('#filt [data-f]').forEach(b=>b.onclick=()=>{filt=b.dataset.f;$$('#filt [data-f]').forEach(x=>x.setAttribute('aria-pressed',x===b));buildDeck();});
+
+/* ---------- PHẦN 1: 20 câu ---------- */
+function quizScore(){return QZ.filter(q=>ST.quiz[q.id]&&ST.quiz[q.id].first===q.a).length;}
+function drawQuizScore(){
+  const done=QZ.filter(q=>ST.quiz[q.id]).length,s=quizScore();
+  const cls=done&&s/QZ.length>=.85?'hi':s/QZ.length>=.6?'mid':'lo';
+  $('#quizScore').innerHTML=`<span>Đã làm ${done}/${QZ.length}</span><span class="score ${done?cls:'mid'}">Điểm lần đầu: ${s}/${QZ.length}</span>`;
+}
+function renderQuiz(){
+  const box=$('#quizBox');box.innerHTML='';
+  shuffle(QZ).forEach((it,n)=>{
+    const d=document.createElement('div');d.className='q';
+    const order=shuffle(it.o.map((_,i)=>i));
+    d.innerHTML=`<div class="qt">${n+1}. <span class="hint">[${it.t}]</span> ${esc(it.q)}</div>`+
+      order.map(i=>`<button class="opt" data-i="${i}">${esc(it.o[i])}</button>`).join('')+`<div class="expl" hidden></div>`;
+    const paint=()=>{
+      const st=ST.quiz[it.id];if(!st)return;
+      const right=st.last===it.a;
+      d.classList.toggle('right',right);d.classList.toggle('wrong',!right);
+      d.querySelectorAll('.opt').forEach(b=>{const i=+b.dataset.i;b.classList.toggle('ok',right&&i===it.a);b.classList.toggle('no',!right&&i===st.last);});
+      const ex=d.querySelector('.expl');ex.hidden=false;ex.innerHTML=(right?'✅ <b>Đúng rồi!</b> ':'❌ <b>Chưa đúng</b> – chọn lại nhé. ')+(right?'💡 '+esc(it.x):'');
+    };
+    d.addEventListener('click',e=>{const b=e.target.closest('.opt');if(!b)return;
+      const st=ST.quiz[it.id];if(st&&st.last===it.a)return;
+      const i=+b.dataset.i;if(!st)ST.quiz[it.id]={first:i,last:i};else st.last=i;
+      save();paint();drawQuizScore();});
+    paint();box.appendChild(d);
+  });
+  drawQuizScore();
+}
+$('#quizRedo').onclick=()=>{ST.quiz={};save();renderQuiz();window.scrollTo({top:$('#quizBox').offsetTop-80,behavior:'smooth'});};
+
+/* ---------- PHẦN 2A: sắp xếp từ ---------- */
+function renderOrd(){
+  const box=$('#ordBox');box.innerHTML='';
+  ORD.forEach((it,n)=>{
+    const words=it.en.split(' ');
+    let pool=shuffle(words.map((w,i)=>({w,i}))),ans=[];
+    if(pool.map(x=>x.w).join(' ')===it.en)pool=pool.reverse();
+    const d=document.createElement('div');d.className='q';
+    d.innerHTML=`<div class="qt">${n+1}. ${esc(it.vi)}</div><div class="drop pool"></div><div class="drop ans"></div>
+      <div class="row"><button class="b primary" data-c>Kiểm tra</button><button class="b" data-r>↺ Làm lại</button></div><div class="expl fb"></div>`;
+    const P=d.querySelector('.pool'),A=d.querySelector('.ans'),fb=d.querySelector('.fb');
+    const draw=()=>{
+      P.innerHTML='';A.innerHTML='';
+      pool.forEach((t,k)=>{const b=document.createElement('button');b.className='tile';b.textContent=t.w;b.onclick=()=>{pool.splice(k,1);ans.push(t);draw();};P.appendChild(b);});
+      ans.forEach((t,k)=>{const b=document.createElement('button');b.className='tile';b.textContent=t.w;b.style.background='#fff';b.onclick=()=>{ans.splice(k,1);pool.push(t);draw();};A.appendChild(b);});
+    };
+    const showSaved=()=>{const s=ST.ord[it.id];if(!s)return;fb.innerHTML=s.ok?`✅ <b>Đúng!</b> ${esc(it.en)}`:`Lần đầu em xếp: <i>${esc(s.first)}</i> ❌`;d.classList.toggle('right',s.lastOk);d.classList.toggle('wrong',!s.lastOk);};
+    d.querySelector('[data-c]').onclick=()=>{
+      const sent=ans.map(t=>t.w).join(' ');if(!ans.length){toast('Em hãy xếp các từ trước nhé.');return;}
+      const ok=[it.en,...it.alt].includes(sent);
+      if(!ST.ord[it.id])ST.ord[it.id]={first:sent,ok};
+      ST.ord[it.id].last=sent;ST.ord[it.id].lastOk=ok;save();
+      d.classList.toggle('right',ok);d.classList.toggle('wrong',!ok);
+      fb.innerHTML=ok?`✅ <b>Đúng rồi!</b> ${esc(sent)}`:'❌ <b>Chưa đúng.</b> Đọc lại câu em ghép và thử lại nhé.';
+      if(ok)say(sent);
+    };
+    d.querySelector('[data-r]').onclick=()=>{pool=shuffle(words.map((w,i)=>({w,i})));ans=[];fb.innerHTML='';d.classList.remove('right','wrong');draw();};
+    draw();showSaved();box.appendChild(d);
+  });
+}
+
+/* ---------- PHẦN 2B: chép câu ---------- */
+const nw=w=>w.toLowerCase().replace(/[^a-z']/g,'');
+function cmp(target,ans){
+  const T=target.split(/\s+/),A=ans.trim().split(/\s+/).filter(Boolean);
+  const tn=T.map(nw),an=A.map(nw);
+  const L=Array.from({length:tn.length+1},()=>new Array(an.length+1).fill(0));
+  for(let i=1;i<=tn.length;i++)for(let j=1;j<=an.length;j++)L[i][j]=tn[i-1]&&tn[i-1]===an[j-1]?L[i-1][j-1]+1:Math.max(L[i-1][j],L[i][j-1]);
+  const ok=new Array(tn.length).fill(false);let i=tn.length,j=an.length;
+  while(i>0&&j>0){if(tn[i-1]&&tn[i-1]===an[j-1]){ok[i-1]=true;i--;j--;}else if(L[i-1][j]>=L[i][j-1])i--;else j--;}
+  const m=ok.filter(Boolean).length;
+  return {score:Math.round(100*m/Math.max(tn.length,an.length)),html:T.map((w,k)=>`<span class="${ok[k]?'o':'m'}">${esc(w)}</span>`).join(' ')};
+}
+function renderCopy(){
+  const box=$('#cpBox');box.innerHTML='';
+  CP.forEach((it,n)=>{
+    const d=document.createElement('div');d.className='q';
+    d.innerHTML=`<div class="qt">${n+1}. <span class="model">${esc(it.en)}</span> <span class="hint">(${esc(it.vi)})</span></div>
+      <div class="row"><button class="b" data-s>🔊 Nghe</button><button class="b" data-h>🙈 Che câu mẫu</button></div>
+      <textarea placeholder="Gõ lại câu…" style="min-height:56px;margin-top:8px"></textarea>
+      <div class="row" style="margin-top:6px"><button class="b primary" data-c>Kiểm tra</button></div><div class="fb"></div>`;
+    const ta=d.querySelector('textarea'),fb=d.querySelector('.fb'),model=d.querySelector('.model');
+    ta.value=ST.cpText[it.id]||'';ta.oninput=()=>{ST.cpText[it.id]=ta.value;save();};
+    const show=r=>{const exact=ta.value.trim()===it.en;const cls=r.score>=85?'hi':r.score>=60?'mid':'lo';
+      let note='';if(r.score===100&&!exact)note='<div class="expl">⚠️ Đủ từ rồi, nhưng chú ý <b>chữ hoa</b> và <b>dấu câu</b>: '+esc(it.en)+'</div>';
+      fb.innerHTML=`<span class="score ${cls}">${r.score}%</span>${exact?'Chép đúng hoàn toàn! 🎉':'Từ màu đỏ là từ em thiếu hoặc sai:'}<div class="diff">${r.html}</div>${note}`;
+      d.classList.toggle('right',exact);d.classList.toggle('wrong',!exact);};
+    d.querySelector('[data-s]').onclick=()=>say(it.en);
+    d.querySelector('[data-h]').onclick=e=>{const hid=model.style.visibility==='hidden';model.style.visibility=hid?'visible':'hidden';e.target.textContent=hid?'🙈 Che câu mẫu':'👀 Hiện câu mẫu';if(!hid)say(it.en);};
+    d.querySelector('[data-c]').onclick=()=>{const v=ta.value.trim();if(!v){toast('Em hãy gõ câu trước nhé.');return;}
+      const r=cmp(it.en,v);if(!ST.cp[it.id])ST.cp[it.id]={first:v,score:r.score,exact:v===it.en};ST.cp[it.id].last=v;save();show(r);};
+    if(ST.cp[it.id])show(cmp(it.en,ta.value||ST.cp[it.id].last));
+    box.appendChild(d);
+  });
+}
+
+/* ---------- PHẦN 3: brainstorm ---------- */
+function renderBrain(){
+  const box=$('#brBox');box.innerHTML='';
+  BR.forEach(b=>{
+    const S=ST.br[b.id]||(ST.br[b.id]={ideas:[],sent:''});
+    const d=document.createElement('div');d.className='card';
+    d.innerHTML=`<h3>${b.em} ${esc(b.vi)} <span class="hint">(${esc(b.en)})</span></h3>
+      <div class="hint">Ý tưởng của em:</div><div class="mine"></div>
+      <div class="hint">Gợi ý (bấm để thêm):</div><div class="sugs"></div>
+      <div class="row" style="margin-top:6px"><input type="text" class="own" placeholder="Gõ ý của em (ví dụ: rest at home)" style="flex:1;min-width:0"><button class="b primary" data-add>+ Thêm</button></div>
+      <div class="hint" style="margin-top:8px">Viết 2 câu lời khuyên (You should… / You shouldn't…):</div>
+      <textarea class="sent" placeholder="You should …"></textarea>
+      <div class="tip st"></div>
+      <button class="b" data-m>💡 Xem câu mẫu</button><div class="tip md" hidden>${esc(b.model)}</div>`;
+    const mine=d.querySelector('.mine'),sugs=d.querySelector('.sugs'),own=d.querySelector('.own'),ta=d.querySelector('.sent'),st=d.querySelector('.st');
+    const draw=()=>{
+      mine.innerHTML=S.ideas.map((t,i)=>`<span class="chip mine">${esc(t)} <button class="b" data-x="${i}" style="padding:0 8px;border-radius:999px">×</button></span>`).join('')||'<span class="hint">(chưa có)</span>';
+      sugs.innerHTML=b.sug.map(t=>`<span class="chip sug ${S.ideas.includes(t)?'on':''}" data-t="${esc(t)}">+ ${esc(t)}</span>`).join('');
+      const s=(ta.value.match(/should/gi)||[]).length;
+      st.textContent=`Ý tưởng: ${S.ideas.length}/3 ${S.ideas.length>=3?'✅':''} · Câu lời khuyên: ${Math.min(s,2)}/2 ${s>=2?'✅':''}`;
+    };
+    const add=t=>{t=t.trim();if(!t||S.ideas.includes(t))return;S.ideas.push(t);save();draw();};
+    mine.onclick=e=>{const x=e.target.closest('[data-x]');if(x){S.ideas.splice(+x.dataset.x,1);save();draw();}};
+    sugs.onclick=e=>{const c=e.target.closest('[data-t]');if(c){say(c.dataset.t);add(c.dataset.t);}};
+    d.querySelector('[data-add]').onclick=()=>{add(own.value);own.value='';};
+    own.onkeydown=e=>{if(e.key==='Enter'){add(own.value);own.value='';}};
+    ta.value=S.sent||'';ta.oninput=()=>{S.sent=ta.value;save();draw();};
+    d.querySelector('[data-m]').onclick=()=>{d.querySelector('.md').hidden=false;};
+    draw();box.appendChild(d);
+  });
+}
+
+/* ---------- PHẦN 4: thư ---------- */
+const CHECKS=[['Lời chào (Hi / Dear …,)',/^\s*(hi|hello|dear)\b/i],['Nói về thời tiết (weather)',/weather/i],['Nói mọi người bị ốm (sick / cold / flu…)',/(sick|\bill\b|cold|flu|fever|cough)/i],
+ ['Nói phòng bệnh quan trọng (important)',/important/i],['Lời khuyên (should)',/should/i],['Nhắc bạn (Please remember / Take care)',/(remember|please|don't forget|take care)/i],['Lời kết (Write back / Your friend / Best wishes)',/(write back|your friend|best wishes|bye|love,)/i]];
+$('#needChips').innerHTML=LETTER.need.map(w=>`<span class="chip" data-w="${w}">${w}</span>`).join('');
+const L=$('#letter');L.value=ST.letter||'';
+function letterUpd(){
+  const n=wc(L.value);
+  $('#lcount').innerHTML=`<b>${n}</b> từ (yêu cầu ${LETTER.min}–${LETTER.max} từ) ${n>=LETTER.min&&n<=LETTER.max?'✅':''}`;
+  $('#lcheck').innerHTML=CHECKS.map(([t,re])=>`<li>${re.test(L.value)?'✅':'⬜'} ${esc(t)}</li>`).join('');
+  $$('#needChips .chip').forEach(c=>c.classList.toggle('on',new RegExp(c.dataset.w,'i').test(L.value)));
+  $('#lmodel').disabled=n<LETTER.min*0.6;
+}
+L.oninput=()=>{ST.letter=L.value;save();letterUpd();};letterUpd();
+$('#lmodel').onclick=()=>{const b=$('#lmodelBox');b.hidden=false;b.innerHTML='<b>Thư mẫu:</b><br>'+esc(LETTER.model).replace(/\n/g,'<br>');};
+
+/* ---------- ghi âm đọc thư ---------- */
+const SRC=window.SpeechRecognition||window.webkitSpeechRecognition;
+let mr=null,chunks=[],rec={blob:null,mime:'',dur:0,sent:false,transcript:'',score:null},t0=0,tick=null,sr=null;
+$('#recBtn').onclick=async()=>{
+  if(mr&&mr.state==='recording'){mr.stop();return;}
+  if(wc(L.value)<LETTER.min*0.6){toast('Em hãy viết thư trước, rồi mới đọc và ghi âm nhé.');return;}
+  if(!navigator.mediaDevices||!window.MediaRecorder){toast('Trình duyệt này chưa ghi âm được. Hãy dùng Chrome hoặc Safari.',5000);return;}
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    chunks=[];mr=new MediaRecorder(stream);rec.transcript='';
+    mr.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
+    mr.onstop=()=>{
+      stream.getTracks().forEach(t=>t.stop());clearInterval(tick);try{sr&&sr.stop();}catch(e){}
+      rec.mime=(mr.mimeType||'audio/webm').split(';')[0];rec.blob=new Blob(chunks,{type:rec.mime});rec.dur=Math.round((Date.now()-t0)/1000);rec.sent=false;
+      $('#recAudio').src=URL.createObjectURL(rec.blob);$('#recOut').hidden=false;$('#recMsg').textContent='';
+      $('#recBtn').textContent='⏺ Ghi âm lại';$('#recTime').textContent='';
+      setTimeout(()=>{if(rec.transcript){rec.score=cmp(L.value.replace(/\n/g,' '),rec.transcript).score;$('#recScore').textContent='Máy nghe được độ khớp với thư của em: '+rec.score+'%';}else{rec.score=null;$('#recScore').textContent='';}},400);
+    };
+    t0=Date.now();mr.start();$('#recBtn').textContent='⏹ Dừng ghi âm';
+    tick=setInterval(()=>{const s=Math.round((Date.now()-t0)/1000);$('#recTime').textContent='🔴 '+s+' giây';if(s>=180)mr.stop();},500);
+    if(SRC){try{sr=new SRC();sr.lang='en-US';sr.continuous=true;sr.interimResults=false;sr.onresult=e=>{rec.transcript='';for(let i=0;i<e.results.length;i++)rec.transcript+=e.results[i][0].transcript+' ';};sr.start();}catch(e){}}
+  }catch(err){toast('Em cần bấm “Cho phép” micro nhé.',4000);}
+};
+function b64(blob){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(blob);});}
+async function postJSON(obj){
+  const body=JSON.stringify(obj);
+  try{
+    const r=await fetch(SCRIPT_URL,{method:'POST',body,headers:{'Content-Type':'text/plain;charset=utf-8'},redirect:'follow'});
+    const j=await r.json();if(!j.ok)throw new Error(j.error||'fail');return j;
+  }catch(err){
+    if(err instanceof TypeError){await fetch(SCRIPT_URL,{method:'POST',body,mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'}});return {ok:true};}
+    throw err;
+  }
+}
+const HAS_URL=/^https:\/\/script\.google(usercontent)?\.com\//.test(SCRIPT_URL);
+if(!HAS_URL)$('#noUrl').hidden=false;
+const stuName=()=>($('#stuName').value||load('name','')).trim();
+$('#recSend').onclick=async()=>{
+  if(!rec.blob)return;
+  if(!HAS_URL){$('#recMsg').textContent='Trang chưa được cài link nhận bài.';return;}
+  const name=stuName();if(!name){toast('Em ghi tên ở tab “Nộp bài” trước nhé.');return;}
+  const btn=$('#recSend');btn.disabled=true;$('#recMsg').textContent='Đang gửi…';
+  const ext=rec.mime.includes('mp4')?'m4a':rec.mime.includes('ogg')?'ogg':'webm';
+  for(let k=0;k<3;k++){
+    try{
+      await postJSON({type:'audio',name,lesson:LESSON,file:'DocTo_01_Thu.'+ext,mime:rec.mime,label:'Đọc lại thư',target:L.value.trim(),transcript:rec.transcript,score:rec.score,dur:rec.dur,audio:await b64(rec.blob)});
+      rec.sent=true;$('#recMsg').textContent='✅ Đã gửi thầy/cô';btn.disabled=false;return;
+    }catch(e){await new Promise(r=>setTimeout(r,1500*(k+1)));}
+  }
+  $('#recMsg').textContent='⚠️ Chưa gửi được (mạng yếu?). Em bấm gửi lại nhé.';btn.disabled=false;
+};
+window.addEventListener('beforeunload',e=>{if(mr&&mr.state==='recording'||(rec.blob&&!rec.sent)){e.preventDefault();e.returnValue='';}});
+
+/* ---------- nộp bài ---------- */
+const ordDone=()=>ORD.filter(o=>ST.ord[o.id]).length,ordOk=()=>ORD.filter(o=>ST.ord[o.id]&&ST.ord[o.id].ok).length;
+const cpDone=()=>CP.filter(c=>ST.cp[c.id]).length,cpAvg=()=>cpDone()?Math.round(CP.reduce((s,c)=>s+(ST.cp[c.id]?ST.cp[c.id].score:0),0)/cpDone()):0;
+const brDone=()=>BR.filter(b=>{const s=ST.br[b.id];return s&&s.ideas.length>=3&&(s.sent.match(/should/gi)||[]).length>=2;}).length;
+function renderSummary(){
+  $('#stuName').value=load('name','');
+  const known=DECK.filter(c=>ST.known[c.k]).length;
+  $('#sumBox').innerHTML=`<table><tr><th>Phần</th><th>Kết quả</th></tr>
+   <tr><td>① Thẻ học</td><td>đã thuộc ${known}/${DECK.length} thẻ</td></tr>
+   <tr><td>① 20 câu hỏi</td><td>${quizScore()}/${QZ.length} (lần đầu) · làm ${QZ.filter(q=>ST.quiz[q.id]).length}/${QZ.length}</td></tr>
+   <tr><td>② Sắp xếp từ</td><td>${ordOk()}/${ORD.length} đúng lần đầu</td></tr>
+   <tr><td>② Chép câu</td><td>${cpDone()}/${CP.length} câu · trung bình ${cpAvg()}%</td></tr>
+   <tr><td>③ Brainstorm</td><td>${brDone()}/${BR.length} triệu chứng hoàn thành</td></tr>
+   <tr><td>④ Thư</td><td>${wc(L.value)} từ · ghi âm: ${rec.sent?'đã gửi':rec.blob?'CÓ bản chưa gửi':'chưa ghi'}</td></tr></table>
+   ${rec.blob&&!rec.sent?'<p class="warn">⚠️ Em còn một bản ghi âm chưa gửi. Vào tab ④, nghe lại rồi bấm <b>Gửi bản ghi này</b>.</p>':''}`;
+}
+function buildSummary(){
+  const details=[];
+  QZ.forEach((q,i)=>{const s=ST.quiz[q.id];if(s)details.push({part:'Quiz '+(i+1)+' ['+q.t+']',question:q.q,answer:q.o[s.first]+(s.last!==s.first?' (sửa: '+q.o[s.last]+')':''),correct:q.o[q.a],result:s.first===q.a?'Đúng':'Sai'});});
+  ORD.forEach((o,i)=>{const s=ST.ord[o.id];if(s)details.push({part:'Sắp xếp '+(i+1),question:o.vi,answer:s.first,correct:o.en,result:s.ok?'Đúng':'Sai'});});
+  CP.forEach((c,i)=>{const s=ST.cp[c.id];if(s)details.push({part:'Chép câu '+(i+1),question:c.en,answer:s.first+(s.last!==s.first?' (sửa: '+s.last+')':''),correct:c.en,result:s.score+'%'});});
+  BR.forEach(b=>{const s=ST.br[b.id];if(s&&(s.ideas.length||s.sent))details.push({part:'Brainstorm – '+b.vi,question:'Nên làm gì khi '+b.en+'?',answer:'Ý: '+s.ideas.join('; ')+' | Câu: '+s.sent,correct:'(giáo viên chấm)',result:s.ideas.length+' ý'});});
+  if(L.value.trim())details.push({part:'Viết thư',question:'Thư về thời tiết thay đổi, mọi người bị ốm, phòng bệnh',answer:L.value.trim(),correct:'(giáo viên chấm)',result:wc(L.value)+' từ; '+CHECKS.filter(([t,re])=>re.test(L.value)).length+'/'+CHECKS.length+' tiêu chí'});
+  const known=DECK.filter(c=>ST.known[c.k]).length;
+  return {summary:{recordings:rec.sent?1:0,avg:rec.score,
+    full:'Đọc thư: '+(rec.sent?'đã gửi':'chưa gửi'),
+    writes:'Sắp xếp '+ordOk()+'/'+ORD.length+' · Chép '+cpDone()+'/'+CP.length+' (TB '+cpAvg()+'%) · Brainstorm '+brDone()+'/'+BR.length+' · Thư '+wc(L.value)+' từ',
+    quiz:'20 câu '+quizScore()+'/'+QZ.length+' · Thẻ thuộc '+known+'/'+DECK.length},details};
+}
+$('#submitBtn').onclick=async()=>{
+  const msg=$('#submitMsg');
+  if(!HAS_URL){msg.textContent='⚙️ Trang chưa được cài link nhận bài.';return;}
+  const name=stuName();if(!name){toast('Em ghi tên trước nhé.');$('#stuName').focus();return;}
+  store('name',name);const btn=$('#submitBtn');btn.disabled=true;btn.textContent='Đang gửi…';
+  try{await postJSON(Object.assign({type:'submit',name,lesson:LESSON,link:location.href},buildSummary()));
+    msg.innerHTML='✅ <b>Đã nộp bài!</b> Thầy/cô đã nhận được bài của em.';toast('✅ Đã nộp bài cho thầy/cô!',5000);
+  }catch(e){msg.textContent='⚠️ Chưa gửi được (mạng yếu?). Em bấm nộp lại nhé.';}
+  finally{btn.disabled=false;btn.textContent='📨 Nộp bài cho thầy/cô';}
+};
+$('#stuName').oninput=e=>store('name',e.target.value);
+
+/* ---------- hỏi tên ---------- */
+(function(){
+  const g=$('#gate'),inp=$('#gateName');if(!load('name',''))g.hidden=false;else g.hidden=true;
+  const go=()=>{const v=inp.value.trim();if(!v){inp.focus();return;}store('name',v);$('#stuName').value=v;g.hidden=true;};
+  $('#gateGo').onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go();};
+})();
+
+/* ---------- khởi động ---------- */
+buildDeck();renderQuiz();renderOrd();renderCopy();renderBrain();
+</script>
+</body>
+</html>
