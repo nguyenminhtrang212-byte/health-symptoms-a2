@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Food Vocabulary Quick Quiz (8 phút)</title>
+<style>
+  :root { --bg:#f6f7f2; --card:#fff; --ink:#1f2a1f; --muted:#667066; --green:#2e7d32; --lg:#e8f3e8; --red:#c62828; --lr:#fdeaea; --amber:#b26a00; --line:#dfe5da; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--ink); line-height:1.5; }
+  .wrap { max-width:640px; margin:0 auto; padding:16px; }
+  header h1 { font-size:1.35rem; margin:8px 0 2px; }
+  header p { margin:0; color:var(--muted); font-size:.92rem; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:18px; margin-top:14px; }
+  .bar { display:flex; align-items:center; gap:10px; position:sticky; top:0; background:var(--bg); padding:10px 0; z-index:2; }
+  .timer { font-variant-numeric:tabular-nums; font-weight:700; font-size:1.15rem; min-width:64px; }
+  .timer.low { color:var(--red); }
+  .prog { flex:1; height:8px; background:var(--line); border-radius:99px; overflow:hidden; }
+  .prog i { display:block; height:100%; width:0; background:var(--green); transition:width .25s; }
+  .lvl { display:inline-block; font-size:.78rem; font-weight:700; padding:2px 10px; border-radius:99px; background:var(--lg); color:var(--green); }
+  .lvl.l2 { background:#fff3d6; color:var(--amber); }
+  .lvl.l3 { background:var(--lr); color:var(--red); }
+  .q { font-size:1.25rem; font-weight:600; margin:12px 0 4px; }
+  .emoji { font-size:4.2rem; text-align:center; margin:6px 0 2px; }
+  .hint { color:var(--muted); font-size:.9rem; margin-bottom:8px; }
+  .opts { display:grid; gap:10px; margin-top:12px; }
+  button { font:inherit; cursor:pointer; }
+  .opt { text-align:left; padding:12px 14px; border:2px solid var(--line); border-radius:12px; background:#fff; }
+  .opt:hover { border-color:var(--green); }
+  .opt.sel { border-color:var(--green); background:var(--lg); }
+  .primary { background:var(--green); color:#fff; border:0; padding:12px 22px; border-radius:12px; font-weight:700; }
+  .primary:disabled { opacity:.4; cursor:not-allowed; }
+  .row { display:flex; justify-content:space-between; align-items:center; margin-top:16px; gap:10px; }
+  .score { font-size:2.4rem; font-weight:800; color:var(--green); }
+  table { width:100%; border-collapse:collapse; margin-top:10px; font-size:.95rem; }
+  th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); }
+  .rev { border-left:5px solid var(--red); background:var(--lr); border-radius:8px; padding:10px 12px; margin-top:10px; font-size:.93rem; }
+  .rev b.ok { color:var(--green); }
+  .hidden { display:none; }
+  ul.rules { padding-left:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Food Vocabulary Quick Quiz</h1>
+    <p>Oxford Word Skills Basic, unit 24–26 gộp · 24 câu · 8 phút · từ dễ đến khó</p>
+  </header>
+
+  <section id="start" class="card">
+    <h2 style="margin-top:0">Chuẩn bị</h2>
+    <ul class="rules">
+      <li>24 câu trắc nghiệm, chia 3 mức: Mức 1 (dễ, hình ảnh), Mức 2 (vừa, nghĩa tiếng Việt), Mức 3 (khó, đồ đựng, ngữ pháp, nấu ăn, dinh dưỡng).</li>
+      <li>Có 8 phút. Trả lời nhanh theo phản xạ, không bỏ trống được câu đã qua.</li>
+      <li>Hết giờ bài tự nộp. Cuối bài có điểm từng mức và phần xem lại câu sai.</li>
+    </ul>
+    <div class="row"><span></span><button class="primary" id="startBtn">Bắt đầu</button></div>
+  </section>
+
+  <section id="quiz" class="hidden">
+    <div class="bar">
+      <span class="timer" id="timer">8:00</span>
+      <div class="prog"><i id="prog"></i></div>
+      <span id="count" style="font-size:.9rem;color:var(--muted)">1/24</span>
+    </div>
+    <div class="card">
+      <span class="lvl" id="lvl"></span>
+      <div class="emoji hidden" id="emoji"></div>
+      <div class="q" id="q"></div>
+      <div class="hint" id="hint"></div>
+      <div class="opts" id="opts"></div>
+      <div class="row">
+        <span id="warn" style="color:var(--red);font-size:.9rem"></span>
+        <button class="primary" id="next" disabled>Câu tiếp</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="result" class="hidden">
+    <div class="card">
+      <div style="color:var(--muted)" id="why"></div>
+      <div class="score" id="total"></div>
+      <div id="band" style="font-weight:600"></div>
+      <table>
+        <thead><tr><th>Mức</th><th>Đúng</th></tr></thead>
+        <tbody id="levels"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Xem lại câu sai</h3>
+      <div id="review"></div>
+    </div>
+    <div class="row"><span></span><button class="primary" id="again">Làm lại</button></div>
+  </section>
+</div>
+
+<script>
+/* Câu hỏi: lv 1 = dễ, 2 = vừa, 3 = khó. a = đáp án đúng, o = các đáp án sai. */
+var QUESTIONS = [
+  /* Mức 1: nhìn hình, chọn từ */
+  {lv:1, e:"🍎", q:"Đây là gì?", a:"apple", o:["banana","lemon","pear"], x:"apple = quả táo."},
+  {lv:1, e:"🥛", q:"Đây là gì?", a:"milk", o:["butter","juice","sugar"], x:"milk = sữa (không đếm được: some milk)."},
+  {lv:1, e:"🍞", q:"Đây là gì?", a:"bread", o:["rice","cake","jam"], x:"bread = bánh mì (không đếm được)."},
+  {lv:1, e:"🧀", q:"Đây là gì?", a:"cheese", o:["butter","eggs","ham"], x:"cheese = phô mai (a piece of cheese)."},
+  {lv:1, e:"🥕", q:"Đây là gì?", a:"carrot", o:["onion","potato","cabbage"], x:"carrot = cà rốt."},
+  {lv:1, e:"🍌", q:"Đây là gì?", a:"banana", o:["mango","orange","peach"], x:"banana = chuối."},
+  {lv:1, e:"🐟", q:"Đây là gì?", a:"fish", o:["duck","lamb","pork"], x:"fish = cá."},
+  {lv:1, e:"🍚", q:"Đây là gì?", a:"rice", o:["pasta","noodles","bread"], x:"rice = gạo, cơm (không đếm được)."},
+
+  /* Mức 2: từ tiếng Anh, chọn nghĩa */
+  {lv:2, q:"beef", h:"Chọn nghĩa tiếng Việt", a:"thịt bò", o:["thịt heo","thịt cừu","thịt gà"], x:"cow là con bò, thịt của nó là beef."},
+  {lv:2, q:"prawns", h:"Chọn nghĩa tiếng Việt", a:"tôm", o:["cua","mực","con hến"], x:"prawns = tôm. crab = cua, squid = mực, mussels = con hến."},
+  {lv:2, q:"cabbage", h:"Chọn nghĩa tiếng Việt", a:"bắp cải", o:["xà lách","súp lơ trắng","hành tây"], x:"cabbage = bắp cải. lettuce = xà lách."},
+  {lv:2, q:"strawberry", h:"Chọn nghĩa tiếng Việt", a:"dâu tây", o:["anh đào","nho","dưa"], x:"strawberry = dâu tây. cherry = anh đào, grapes = nho."},
+  {lv:2, q:"garlic", h:"Chọn nghĩa tiếng Việt", a:"tỏi", o:["ớt","hành tây","nấm"], x:"garlic = tỏi. Đọc /ˈɡɑːlɪk/."},
+  {lv:2, q:"courgette", h:"Chọn nghĩa tiếng Việt", a:"bí xanh", o:["cà tím","dưa leo","đậu Hà Lan"], x:"courgette = bí xanh. aubergine = cà tím. cucumber = dưa leo."},
+  {lv:2, q:"biscuits", h:"Chọn nghĩa tiếng Việt", a:"bánh quy", o:["bánh ngọt","mứt","sô cô la"], x:"biscuits = bánh quy. a cake = bánh ngọt."},
+  {lv:2, q:"mussels", h:"Chọn nghĩa tiếng Việt", a:"con hến", o:["con tôm","con cua","con mực"], x:"mussels /ˈmʌslz/ = con hến, loại hải sản có vỏ."},
+
+  /* Mức 3: đồ đựng, ngữ pháp, nấu ăn, dinh dưỡng, phát âm */
+  {lv:3, q:"Chọn từ khác loại.", h:"ham, bacon, sausages, mussels", a:"mussels", o:["ham","bacon","sausages"], x:"ham, bacon, sausages đều làm từ heo. mussels là hải sản."},
+  {lv:3, q:"There's a ___ of tuna in the cupboard.", h:"Đồ ăn đóng hộp", a:"tin", o:["can","carton","packet"], x:"Theo sách: dùng tin khi bên trong là đồ ăn (a tin of tuna), dùng can cho đồ uống (a can of soda)."},
+  {lv:3, q:"Câu nào đúng?", h:"Danh từ không đếm được", a:"I need some milk.", o:["I need a milk.","I need two milks.","I need many milk."], x:"milk không đếm được: dùng some milk hoặc a bottle of milk."},
+  {lv:3, q:"Not old and not from a tin: ___ fruit.", h:"Chọn từ đúng nghĩa", a:"fresh", o:["sweet","bitter","frozen"], x:"fresh = tươi, không cũ và không đóng hộp."},
+  {lv:3, q:"___ the onion in hot oil for five minutes.", h:"Động từ nấu ăn: chiên", a:"Fry", o:["Boil","Bake","Steam"], x:"fry = chiên, rán trong dầu. boil = luộc. bake = nướng lò. steam = hấp."},
+  {lv:3, q:"The eggs ___ for ten minutes.", h:"Câu bị động, mô tả quy trình", a:"are boiled", o:["boiled","is boiled","are boil"], x:"Bị động hiện tại: is/are + V3. eggs là số nhiều nên dùng are."},
+  {lv:3, q:"Milk and cheese have ___, which is good for bones and teeth.", h:"Từ vựng dinh dưỡng", a:"calcium", o:["fibre","protein","energy"], x:"calcium = canxi."},
+  {lv:3, q:"Từ nào bắt đầu bằng âm /ʃ/ (như trong she)?", h:"Nhận diện phát âm", a:"sugar", o:["salad","salmon","sausage"], x:"sugar /ˈʃʊɡə(r)/ đọc \"su\" là /ʃ/. salad, salmon, sausage bắt đầu bằng /s/."}
+];
+
+var TOTAL_SEC = 8 * 60;
+var state = {};
+
+function $(id){ return document.getElementById(id); }
+function shuffle(a){ a = a.slice(); for (var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function fmt(s){ var m=Math.floor(s/60), r=s%60; return m+":"+(r<10?"0":"")+r; }
+
+function start(){
+  state = { i:0, left:TOTAL_SEC, answers:[], picked:null, order:[], timer:null };
+  state.order = QUESTIONS.map(function(q){ return { q:q, opts:shuffle([q.a].concat(q.o)) }; });
+  $("start").classList.add("hidden");
+  $("result").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+  $("timer").textContent = fmt(state.left);
+  render();
+  state.timer = setInterval(function(){
+    state.left--;
+    $("timer").textContent = fmt(Math.max(state.left,0));
+    $("timer").classList.toggle("low", state.left <= 60);
+    if (state.left <= 0) finish("Hết giờ, bài đã tự nộp.");
+  }, 1000);
+}
+
+function render(){
+  var item = state.order[state.i], q = item.q;
+  state.picked = null;
+  $("lvl").textContent = "Mức " + q.lv + (q.lv===1?" · dễ":q.lv===2?" · vừa":" · khó");
+  $("lvl").className = "lvl l" + q.lv;
+  var em = $("emoji");
+  if (q.e){ em.textContent = q.e; em.classList.remove("hidden"); } else { em.classList.add("hidden"); }
+  $("q").textContent = q.q;
+  $("hint").textContent = q.h || "";
+  $("count").textContent = (state.i+1) + "/" + state.order.length;
+  $("prog").style.width = (state.i/state.order.length*100) + "%";
+  $("warn").textContent = "";
+  $("next").disabled = true;
+  $("next").textContent = state.i === state.order.length-1 ? "Nộp bài" : "Câu tiếp";
+  var box = $("opts"); box.innerHTML = "";
+  item.opts.forEach(function(o){
+    var b = document.createElement("button");
+    b.className = "opt"; b.textContent = o;
+    b.onclick = function(){
+      state.picked = o;
+      Array.prototype.forEach.call(box.children, function(c){ c.classList.remove("sel"); });
+      b.classList.add("sel");
+      $("next").disabled = false;
+    };
+    box.appendChild(b);
+  });
+}
+
+function next(){
+  if (state.picked === null) return;
+  state.answers[state.i] = state.picked;
+  if (state.i === state.order.length-1) { finish(""); return; }
+  state.i++; render();
+}
+
+function finish(why){
+  clearInterval(state.timer);
+  if (state.picked !== null && state.answers[state.i] === undefined) state.answers[state.i] = state.picked;
+  $("quiz").classList.add("hidden");
+  $("result").classList.remove("hidden");
+  $("why").textContent = why;
+  var per = {1:[0,0],2:[0,0],3:[0,0]}, right = 0, rev = $("review"); rev.innerHTML = "";
+  state.order.forEach(function(item, idx){
+    var q = item.q, ans = state.answers[idx], ok = ans === q.a;
+    per[q.lv][1]++;
+    if (ok) { per[q.lv][0]++; right++; }
+    else {
+      var d = document.createElement("div"); d.className = "rev";
+      var t = (q.e ? q.e + " " : "") + q.q + (q.h ? " (" + q.h + ")" : "");
+      d.innerHTML = "<div></div><div>Bạn chọn: <span class='mine'></span> · Đúng: <b class='ok'></b></div><div class='ex' style='margin-top:4px;color:#444'></div>";
+      d.children[0].textContent = t;
+      d.querySelector(".mine").textContent = ans === undefined ? "(chưa trả lời)" : ans;
+      d.querySelector(".ok").textContent = q.a;
+      d.querySelector(".ex").textContent = q.x;
+      rev.appendChild(d);
+    }
+  });
+  $("total").textContent = right + "/" + state.order.length;
+  var band = right >= 21 ? "Rất tốt: vốn từ đồ ăn vững, sẵn sàng sang bài nói."
+           : right >= 15 ? "Khá: ôn lại các từ ở phần xem lại."
+           : right >= 9  ? "Cần ôn thêm: học lại nhánh từ vựng buổi 1 trước khi làm lại."
+           : "Nên học lại mindmap buổi 1 rồi làm lại.";
+  $("band").textContent = band;
+  var tb = $("levels"); tb.innerHTML = "";
+  [[1,"Mức 1 · dễ (hình ảnh)"],[2,"Mức 2 · vừa (nghĩa tiếng Việt)"],[3,"Mức 3 · khó (đồ đựng, ngữ pháp, nấu ăn, dinh dưỡng)"]].forEach(function(r){
+    var tr = document.createElement("tr");
+    tr.innerHTML = "<td></td><td></td>";
+    tr.children[0].textContent = r[1];
+    tr.children[1].textContent = per[r[0]][0] + "/" + per[r[0]][1];
+    tb.appendChild(tr);
+  });
+  if (!rev.children.length) rev.textContent = "Không có câu sai. Làm tốt lắm!";
+}
+
+$("startBtn").onclick = start;
+$("next").onclick = next;
+$("again").onclick = function(){ $("result").classList.add("hidden"); $("start").classList.remove("hidden"); };
+</script>
+</body>
+</html>
