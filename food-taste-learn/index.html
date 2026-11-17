@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Food: từ vựng, hỏi vị và nói vị (dễ đến khó)</title>
+<style>
+  :root { --bg:#f6f7f2; --card:#fff; --ink:#1f2a1f; --mut:#5d695f; --g:#2e7d32; --lg:#e8f3e8; --o:#b26a00; --lo:#fff1dc; --r:#c62828; --lr:#fdeaea; --line:#dfe5da; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#14201a; --card:#1d2d24; --ink:#eaf2ea; --mut:#a9b8ac; --g:#7bd17f; --lg:#24382b; --o:#f0b45a; --lo:#3a2f1c; --r:#ff8a80; --lr:#3b2323; --line:#33463a; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--ink); line-height:1.5; }
+  .wrap { max-width:720px; margin:0 auto; padding:14px 14px 80px; }
+  h1 { font-size:1.35rem; margin:8px 0 2px; }
+  .sub { color:var(--mut); font-size:.92rem; margin:0 0 8px; }
+  .progress { position:sticky; top:0; background:var(--bg); padding:8px 0; z-index:5; }
+  .pbar { height:10px; background:var(--line); border-radius:99px; overflow:hidden; }
+  .pbar i { display:block; height:100%; width:0; background:var(--g); transition:width .3s; }
+  .ptxt { font-size:.85rem; color:var(--mut); margin-top:4px; }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; }
+  .chip { border:2px solid var(--line); background:var(--card); border-radius:99px; padding:6px 12px; font-size:.9rem; cursor:pointer; color:var(--ink); font:inherit; font-size:.9rem; }
+  .chip.on { border-color:var(--g); background:var(--lg); font-weight:700; }
+  .chip.done::after { content:" ✅"; }
+  .chip.lock { opacity:.55; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; margin-top:12px; }
+  h2 { font-size:1.15rem; margin:0 0 8px; }
+  h3 { font-size:1rem; margin:14px 0 6px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
+  .fc { border:1px solid var(--line); border-radius:12px; padding:10px; background:var(--card); }
+  .fc .em { font-size:2rem; }
+  .fc b { font-size:1.05rem; }
+  .ipa { color:var(--mut); font-size:.88rem; }
+  .vi { font-size:.92rem; }
+  .ex { font-size:.85rem; color:var(--mut); margin-top:2px; }
+  button { font:inherit; cursor:pointer; }
+  .say { border:0; background:var(--lg); border-radius:8px; padding:2px 8px; margin-left:4px; }
+  .primary { background:var(--g); color:#fff; border:0; padding:11px 20px; border-radius:12px; font-weight:700; }
+  .primary:disabled { opacity:.4; cursor:not-allowed; }
+  .ghost { background:transparent; border:2px solid var(--line); color:var(--ink); padding:9px 16px; border-radius:12px; }
+  table { width:100%; border-collapse:collapse; font-size:.93rem; }
+  th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { background:var(--lg); }
+  .tip { background:var(--lo); border-radius:10px; padding:10px 12px; margin:10px 0; font-size:.92rem; }
+  .opt { display:block; width:100%; text-align:left; padding:11px 13px; margin-top:8px; border:2px solid var(--line); border-radius:12px; background:var(--card); color:var(--ink); }
+  .opt.ok { border-color:var(--g); background:var(--lg); }
+  .opt.bad { border-color:var(--r); background:var(--lr); }
+  .qn { font-weight:700; margin-top:4px; }
+  .fb { margin-top:8px; font-size:.92rem; padding:8px 10px; border-radius:10px; }
+  .fb.ok { background:var(--lg); } .fb.bad { background:var(--lr); }
+  .row { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; flex-wrap:wrap; }
+  .hidden { display:none; }
+  label.tick { display:flex; gap:8px; align-items:flex-start; margin-top:12px; font-size:.95rem; }
+  .modal { position:fixed; inset:0; background:rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center; padding:20px; z-index:20; }
+  .modal .box { background:var(--card); border-radius:14px; padding:18px; max-width:420px; }
+  .score { font-size:2rem; font-weight:800; color:var(--g); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Food: từ vựng, hỏi vị và nói vị</h1>
+  <p class="sub">3 mức từ dễ đến khó · học xong mới mở bài tập · làm đạt từ 70% mới mở mức tiếp theo</p>
+  <div class="progress"><div class="pbar"><i id="pbar"></i></div><div class="ptxt" id="ptxt"></div></div>
+  <div class="chips" id="chips"></div>
+  <div id="stage"></div>
+</div>
+<div class="modal hidden" id="modal"><div class="box"><p id="mtxt"></p><div class="row"><span></span><button class="primary" id="mok">Đã hiểu</button></div></div></div>
+
+<script>
+/* ====== DỮ LIỆU (câu và ví dụ do Claude soạn; từ khớp unit 24 đến 26 của Oxford Word Skills Basic) ====== */
+var KEY = "food-taste-learn-v1";
+var FOODS = [
+ ["apple","🍎","/ˈæpl/","quả táo"],["banana","🍌","/bəˈnɑːnə/","chuối"],["lemon","🍋","/ˈlemən/","chanh vàng"],["strawberry","🍓","/ˈstrɔːbəri/","dâu tây"],
+ ["carrot","🥕","/ˈkærət/","cà rốt"],["tomato","🍅","/təˈmɑːtəʊ/","cà chua"],["potato","🥔","/pəˈteɪtəʊ/","khoai tây"],["onion","🧅","/ˈʌnjən/","hành tây"],
+ ["cheese","🧀","/tʃiːz/","phô mai"],["milk","🥛","/mɪlk/","sữa"],["bread","🍞","/bred/","bánh mì"],["egg","🥚","/eɡ/","trứng"],
+ ["rice","🍚","/raɪs/","gạo, cơm"],["chicken","🍗","/ˈtʃɪkɪn/","gà"],["fish","🐟","/fɪʃ/","cá"],["chocolate","🍫","/ˈtʃɒklət/","sô cô la"]
+];
+var TASTE1 = [
+ ["sweet","🍬","/swiːt/","ngọt","Strawberries are very sweet."],["sour","🍋","/ˈsaʊə(r)/","chua","Lemons are sour."],["salty","🧂","/ˈsɔːlti/","mặn","Olives are salty."],
+ ["bitter","☕","/ˈbɪtə(r)/","đắng","Black coffee is bitter."],["spicy","🌶️","/ˈspaɪsi/","cay","Chillies make your mouth hot."],["fresh","🥬","/freʃ/","tươi","I eat a lot of fresh fruit."]
+];
+var TASTE2 = [
+ ["What does it taste like?","/wɒt dʌz ɪt ˈteɪst laɪk/","Nó có vị như thế nào?","It tastes like chicken."],
+ ["How does it taste?","/haʊ dʌz ɪt ˈteɪst/","Vị của nó thế nào?","It tastes sweet."],
+ ["Is it sweet or sour?","/ɪz ɪt ˈswiːt ɔː ˈsaʊə/","Nó ngọt hay chua?","It's sour."],
+ ["Do you like spicy food?","/də ju ˈlaɪk ˈspaɪsi fuːd/","Bạn có thích đồ cay không?","Yes, I do. / No, I don't."],
+ ["Is it too salty for you?","/ɪz ɪt tuː ˈsɔːlti fə ju/","Nó có mặn quá với bạn không?","A bit, yes."],
+ ["What's your favourite food? Why?","/wɒts jɔː ˈfeɪvərɪt fuːd waɪ/","Món bạn thích nhất là gì? Vì sao?","Pizza, because it's cheesy."]
+];
+var TASTE3 = [
+ ["crispy","/ˈkrɪspi/","giòn (mỏng, khô)","The fried chicken is crispy."],["crunchy","/ˈkrʌntʃi/","giòn rộp, nhai kêu","Carrots are crunchy."],
+ ["creamy","/ˈkriːmi/","béo mịn như kem","The soup is creamy."],["chewy","/ˈtʃuːi/","dai","The meat is a bit chewy."],
+ ["tender","/ˈtendə(r)/","mềm","The beef is tender."],["juicy","/ˈdʒuːsi/","mọng nước","The orange is juicy."],
+ ["greasy","/ˈɡriːsi/","nhiều dầu mỡ","The chips are greasy."],["bland","/blænd/","nhạt nhẽo","The soup is bland. Add some salt."],
+ ["rich","/rɪtʃ/","đậm, béo ngậy","The chocolate cake is very rich."],["sticky","/ˈstɪki/","dính","Sticky rice is soft and sticky."]
+];
+var STEPS = [
+ {id:"s1", t:"Mức 1 · Dễ", note:"Nhận ra đồ ăn và 6 vị cơ bản"},
+ {id:"s2", t:"Mức 2 · Vừa", note:"Hỏi vị và nói vị bằng câu"},
+ {id:"s3", t:"Mức 3 · Khó", note:"Kết cấu món ăn và nói ý kiến có lý do"},
+ {id:"s4", t:"Nói to", note:"Nói thành câu trả lời hoàn chỉnh"}
+];
+/* câu hỏi: q, o (đáp án), a (chỉ số đúng), x (giải thích) */
+var Q1 = [
+ {q:"🍎 là gì?",o:["apple","pear","peach"],a:0,x:"apple = quả táo."},
+ {q:"🥛 là gì?",o:["milk","butter","cheese"],a:0,x:"milk = sữa."},
+ {q:"🍞 là gì?",o:["rice","bread","cake"],a:1,x:"bread = bánh mì."},
+ {q:"🥕 là gì?",o:["onion","carrot","potato"],a:1,x:"carrot = cà rốt."},
+ {q:"Chanh có vị gì?",o:["sweet","sour","salty"],a:1,x:"Lemons are sour: chanh chua."},
+ {q:"Sô cô la đen thường thế nào?",o:["bitter","fresh","salty"],a:0,x:"Dark chocolate and black coffee are bitter: đắng."},
+ {q:"Ớt có vị gì?",o:["spicy","sweet","sour"],a:0,x:"Chilli is spicy: cay."},
+ {q:"Đường có vị gì?",o:["sour","bitter","sweet"],a:2,x:"Sugar is sweet: ngọt."},
+ {q:"Nghĩa của fresh là gì?",o:["cũ","tươi","mặn"],a:1,x:"fresh = tươi, không cũ, không đóng hộp."},
+ {q:"Chọn từ khác loại.",o:["chicken","fish","milk"],a:2,x:"chicken, fish là thịt, cá. milk là sữa."}
+];
+var Q2 = [
+ {q:"The soup ___ salty.",o:["tastes","tastes of","tastes like of"],a:0,x:"taste + tính từ: tastes salty."},
+ {q:"This juice tastes ___ orange.",o:["of","at","in"],a:0,x:"taste of + danh từ: tastes of orange."},
+ {q:"The fish tastes ___ chicken.",o:["of like","like","to"],a:1,x:"taste like + danh từ: tastes like chicken."},
+ {q:"Chọn câu hỏi đúng.",o:["What does it taste like?","What it tastes like?","How does it taste like?"],a:0,x:"Dùng does vì chủ ngữ là it, và taste là động từ nguyên mẫu."},
+ {q:"Trả lời: Is it sweet or sour?",o:["Yes, it is.","It's sour.","It tastes of sour."],a:1,x:"Câu hỏi lựa chọn thì chọn một vế: It's sour."},
+ {q:"The tea is ___ sweet. I don't like it.",o:["too","a bit","not very"],a:0,x:"too = quá (không tốt). I don't like it vì nó quá ngọt."},
+ {q:"The soup is ___ salty, but it's OK.",o:["too","a bit","very much"],a:1,x:"a bit = hơi."},
+ {q:"Chọn câu đúng.",o:["I like spicy food.","I like spicy foods very.","I am like spicy food."],a:0,x:"like + danh từ: I like spicy food."},
+ {q:"Mùi vị của sô cô la: It tastes ___.",o:["sweetly","sweet","of sweet"],a:1,x:"taste + tính từ, không dùng trạng từ sweetly."},
+ {q:"Do you like spicy food? (không thích)",o:["No, I don't.","No, I'm not.","No, I don't like."],a:0,x:"Do you ...? → No, I don't."}
+];
+var Q3 = [
+ {q:"Gà rán ngoài vỏ mỏng và giòn: The fried chicken is ___.",o:["crispy","bland","sticky"],a:0,x:"crispy = giòn mỏng, khô."},
+ {q:"Cà rốt sống nhai nghe kêu: Carrots are ___.",o:["greasy","crunchy","creamy"],a:1,x:"crunchy = giòn rộp, nhai kêu."},
+ {q:"Món ăn nhiều dầu mỡ: The chips are ___.",o:["greasy","tender","juicy"],a:0,x:"greasy = nhiều dầu mỡ."},
+ {q:"Súp thiếu muối, ăn nhạt: The soup is ___.",o:["rich","bland","spicy"],a:1,x:"bland = nhạt nhẽo."},
+ {q:"Thịt bò nấu lâu, rất mềm: The beef is ___.",o:["tender","chewy","sticky"],a:0,x:"tender = mềm."},
+ {q:"Chọn từ khác loại.",o:["crispy","crunchy","creamy"],a:2,x:"crispy, crunchy nói về độ giòn. creamy nói về độ béo mịn."},
+ {q:"It tastes ___ if you add a little lemon.",o:["better","more good","gooder"],a:0,x:"good → better (so sánh hơn bất quy tắc)."},
+ {q:"Chọn câu đúng.",o:["It's a bit too salty for me.","It's a bit too much salty for me.","It's too much a bit salty."],a:0,x:"a bit too + tính từ = hơi quá."},
+ {q:"Chọn câu nói ý kiến có lý do.",o:["I don't like it because it's too bitter.","I don't like it because bitter.","I don't like it too bitter."],a:0,x:"because + mệnh đề đầy đủ (it's too bitter)."},
+ {q:"Nghĩa của sweet and sour là gì?",o:["chua ngọt","ngọt mặn","đắng và cay"],a:0,x:"sweet and sour = chua ngọt. Ví dụ: sweet and sour fish."},
+ {q:"Bánh kem rất béo ngậy: The cake is very ___.",o:["rich","fresh","bland"],a:0,x:"rich = đậm, béo ngậy (nhiều bơ, trứng, đường)."},
+ {q:"Tìm lỗi: The ice cream tastes sweetly.",o:["tastes sweet","tastes of sweet","taste sweetly"],a:0,x:"Sau taste dùng tính từ: tastes sweet."}
+];
+var SPEAK = [
+ "What does your favourite food taste like? (Dùng: It tastes... / It's a bit... / It's not too...)",
+ "Do you like spicy food? Why or why not? (Dùng: I like / I don't like ... because it's ...)",
+ "Describe a dish from your family: how does it look, smell and taste? (Dùng: crispy, tender, creamy, juicy...)"
+];
+
+/* ====== TRẠNG THÁI ====== */
+var S = { cur:"s1", done:{}, read:{}, quiz:{} };
+function load(){ try { var j = JSON.parse(localStorage.getItem(KEY)||"null"); if (j) S = j; } catch(e){} }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+function $(id){ return document.getElementById(id); }
+function say(t){ try { var u = new SpeechSynthesisUtterance(t); u.lang = "en-GB"; u.rate = .9; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch(e){} }
+function alertBox(t){ $("mtxt").textContent = t; $("modal").classList.remove("hidden"); }
+$("mok").onclick = function(){ $("modal").classList.add("hidden"); };
+function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
+function isUnlocked(i){ return i===0 || S.done[STEPS[i-1].id]; }
+function pct(){ var n=0; STEPS.forEach(function(s){ if(S.done[s.id]) n++; }); return Math.round(n/STEPS.length*100); }
+
+function drawChips(){
+  var c = $("chips"); c.innerHTML = "";
+  STEPS.forEach(function(s,i){
+    var b = document.createElement("button");
+    b.className = "chip" + (S.cur===s.id?" on":"") + (S.done[s.id]?" done":"") + (isUnlocked(i)?"":" lock");
+    b.textContent = (isUnlocked(i)?"":"🔒 ") + s.t;
+    b.onclick = function(){
+      if (!isUnlocked(i)) { alertBox("Hãy hoàn thành " + STEPS[i-1].t + " (đạt từ 70% ở phần bài tập) trước nhé."); return; }
+      S.cur = s.id; save(); render();
+    };
+    c.appendChild(b);
+  });
+  $("pbar").style.width = pct()+"%";
+  $("ptxt").textContent = "Hoàn thành " + pct() + "%";
+}
+
+function foodCard(w){ return '<div class="fc"><div class="em">'+w[1]+'</div><b>'+w[0]+'</b><button class="say" data-s="'+w[0]+'">🔊</button><div class="ipa">'+w[2]+'</div><div class="vi">'+w[3]+'</div>'+(w[4]?'<div class="ex">'+w[4]+'</div>':'')+'</div>'; }
+
+function learnHTML(id){
+  if (id==="s1") {
+    return '<h2>Mức 1 · Học từ</h2><h3>16 món ăn quen thuộc</h3><div class="grid">'+FOODS.map(foodCard).join("")+'</div><h3>6 vị cơ bản</h3><div class="grid">'+TASTE1.map(foodCard).join("")+'</div><div class="tip">Hỏi vị đơn giản: <b>Is it sweet or sour?</b> · Trả lời: <b>It\'s sour.</b></div>';
+  }
+  if (id==="s2") {
+    var rows = TASTE2.map(function(r){ return '<tr><td><b>'+r[0]+'</b><button class="say" data-s="'+r[0].replace(/"/g,'')+'">🔊</button><div class="ipa">'+r[1]+'</div></td><td>'+r[2]+'</td><td>'+r[3]+'</td></tr>'; }).join("");
+    return '<h2>Mức 2 · Hỏi và nói vị</h2><table><tr><th>Câu hỏi</th><th>Nghĩa</th><th>Trả lời mẫu</th></tr>'+rows+'</table>'+
+      '<h3>Ba cách nói vị</h3><table><tr><th>Mẫu</th><th>Ví dụ</th></tr><tr><td>taste + tính từ</td><td>It tastes sweet. The soup tastes salty.</td></tr><tr><td>taste of + danh từ (vị của nguyên liệu)</td><td>This juice tastes of orange and lemon.</td></tr><tr><td>taste like + danh từ (giống như)</td><td>It tastes like chicken.</td></tr></table>'+
+      '<h3>Mức độ</h3><table><tr><th>Từ</th><th>Nghĩa</th><th>Ví dụ</th></tr><tr><td>very, really</td><td>rất</td><td>It\'s very sweet.</td></tr><tr><td>a bit</td><td>hơi</td><td>It\'s a bit salty.</td></tr><tr><td>too</td><td>quá (không tốt)</td><td>It\'s too spicy for me.</td></tr><tr><td>not very</td><td>không … lắm</td><td>It\'s not very sweet.</td></tr></table>';
+  }
+  if (id==="s3") {
+    var rs = TASTE3.map(function(r){ return '<tr><td><b>'+r[0]+'</b><button class="say" data-s="'+r[0]+'">🔊</button><div class="ipa">'+r[1]+'</div></td><td>'+r[2]+'</td><td>'+r[3]+'</td></tr>'; }).join("");
+    return '<h2>Mức 3 · Kết cấu món ăn và ý kiến</h2><table><tr><th>Từ</th><th>Nghĩa</th><th>Ví dụ</th></tr>'+rs+'</table>'+
+      '<h3>Cụm và cấu trúc khó hơn</h3><table><tr><th>Mẫu</th><th>Ví dụ</th></tr>'+
+      '<tr><td>sweet and sour (chua ngọt)</td><td>I love sweet and sour fish.</td></tr>'+
+      '<tr><td>a bit too + tính từ</td><td>It\'s a bit too salty for me.</td></tr>'+
+      '<tr><td>tính từ so sánh hơn</td><td>This is sweeter than that. It tastes better with lemon.</td></tr>'+
+      '<tr><td>It tastes better if / when ...</td><td>It tastes better when it\'s hot.</td></tr>'+
+      '<tr><td>ý kiến + because ...</td><td>I like it because it\'s crispy. I don\'t like it because it\'s too bitter.</td></tr></table>'+
+      '<div class="tip">Tránh dịch từng chữ: không nói "It tastes sweetly". Sau taste dùng <b>tính từ</b>.</div>';
+  }
+  return '';
+}
+
+function render(){
+  drawChips();
+  var st = $("stage"), id = S.cur, step = STEPS.filter(function(s){return s.id===id;})[0];
+  if (id==="s4") return renderSpeak();
+  var html = '<div class="card">'+learnHTML(id)+
+    '<label class="tick"><input type="checkbox" id="rd"'+(S.read[id]?' checked':'')+'> Em đã đọc kỹ phần này</label>'+
+    '<div class="row"><span></span><button class="primary" id="toQ">Làm bài tập</button></div></div><div id="quiz"></div>';
+  st.innerHTML = html;
+  bindSay(st);
+  $("rd").onchange = function(){ S.read[id]=this.checked; save(); };
+  $("toQ").onclick = function(){
+    if (!S.read[id]) { alertBox("Hãy đọc kỹ phần từ vựng và tick \"Em đã đọc kỹ\" trước khi làm bài tập."); return; }
+    startQuiz(id);
+  };
+  if (S.quiz[id] && S.quiz[id].best!=null) $("quiz").innerHTML = '<div class="card">Điểm cao nhất của em: <b>'+S.quiz[id].best+'%</b>'+(S.done[id]?' ✅':'')+'</div>';
+}
+
+function bindSay(root){ Array.prototype.forEach.call(root.querySelectorAll("[data-s]"), function(b){ b.onclick = function(){ say(b.getAttribute("data-s")); }; }); }
+
+function startQuiz(id){
+  var bank = id==="s1"?Q1:id==="s2"?Q2:Q3;
+  var items = bank.map(function(q){ var o = shuffle(q.o.map(function(t,i){return {t:t,c:i===q.a};})); return {q:q.q,o:o,x:q.x}; });
+  var i = 0, right = 0, box = $("quiz");
+  function show(){
+    var it = items[i];
+    var h = '<div class="card"><div class="ptxt">Câu '+(i+1)+'/'+items.length+'</div><div class="qn">'+it.q+'</div>';
+    it.o.forEach(function(o,k){ h += '<button class="opt" data-k="'+k+'">'+o.t+'</button>'; });
+    h += '<div id="fb"></div><div class="row"><span></span><button class="primary hidden" id="nx">'+(i===items.length-1?'Xem điểm':'Câu tiếp')+'</button></div></div>';
+    box.innerHTML = h; box.scrollIntoView({behavior:"smooth", block:"start"});
+    Array.prototype.forEach.call(box.querySelectorAll(".opt"), function(b){
+      b.onclick = function(){
+        if (b.disabled) return;
+        var k = +b.getAttribute("data-k"), ok = it.o[k].c;
+        Array.prototype.forEach.call(box.querySelectorAll(".opt"), function(x,j){ x.disabled = true; if (it.o[j].c) x.classList.add("ok"); });
+        if (!ok) b.classList.add("bad"); else right++;
+        $("fb").innerHTML = '<div class="fb '+(ok?'ok':'bad')+'">'+(ok?'Đúng! ':'Chưa đúng. ')+it.x+'</div>';
+        $("nx").classList.remove("hidden");
+      };
+    });
+    $("nx").onclick = function(){ i++; if (i<items.length) show(); else finish(); };
+  }
+  function finish(){
+    var p = Math.round(right/items.length*100);
+    var q = S.quiz[id] || {}; q.best = Math.max(q.best||0, p); S.quiz[id] = q;
+    var pass = p >= 70; if (pass) S.done[id] = true; save(); drawChips();
+    var nextIdx = STEPS.map(function(s){return s.id;}).indexOf(id)+1;
+    box.innerHTML = '<div class="card"><div class="score">'+right+'/'+items.length+' ('+p+'%)</div><p>'+(pass?'Đạt yêu cầu. Mức tiếp theo đã mở.':'Chưa đạt 70%. Đọc lại bài và làm lại nhé.')+'</p><div class="row"><button class="ghost" id="again">Làm lại</button>'+(pass?'<button class="primary" id="go">Sang phần tiếp theo</button>':'<span></span>')+'</div></div>';
+    $("again").onclick = function(){ startQuiz(id); };
+    if (pass) $("go").onclick = function(){ S.cur = STEPS[nextIdx].id; save(); render(); window.scrollTo(0,0); };
+  }
+  show();
+}
+
+function renderSpeak(){
+  var st = $("stage");
+  var h = '<div class="card"><h2>Nói to: trả lời thành câu hoàn chỉnh</h2><p>Mỗi câu hỏi, em nói to 3 đến 4 câu. Bấm 🔊 để nghe câu hỏi, nói xong thì tick.</p>';
+  SPEAK.forEach(function(t,i){
+    var en = t.split(" (")[0];
+    h += '<div class="tip"><b>'+(i+1)+'.</b> '+t+' <button class="say" data-s="'+en.replace(/"/g,'')+'">🔊</button><label class="tick"><input type="checkbox" class="sp" data-i="'+i+'"'+((S.read["sp"+i])?' checked':'')+'> Em đã nói xong</label></div>';
+  });
+  h += '<div class="row"><span></span><button class="primary" id="fin">Hoàn thành bài học</button></div></div>';
+  st.innerHTML = h; bindSay(st);
+  Array.prototype.forEach.call(st.querySelectorAll(".sp"), function(c){ c.onchange = function(){ S.read["sp"+c.getAttribute("data-i")] = c.checked; save(); }; });
+  $("fin").onclick = function(){
+    var miss = SPEAK.filter(function(t,i){ return !S.read["sp"+i]; }).length;
+    if (miss) { alertBox("Em còn "+miss+" câu chưa nói. Hãy nói xong rồi tick nhé."); return; }
+    S.done.s4 = true; save(); drawChips();
+    alertBox("Chúc mừng! Em đã hoàn thành bài học về vị trong đồ ăn. Sang bài viết về buổi đi siêu thị nhé.");
+  };
+}
+
+load(); render();
+</script>
+</body>
+</html>

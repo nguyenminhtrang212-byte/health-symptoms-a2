@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Supermarket Trip: bài viết chia sẻ về nhà</title>
+<style>
+  :root { --bg:#f6f7f2; --card:#fff; --ink:#1f2a1f; --mut:#5d695f; --g:#2e7d32; --lg:#e8f3e8; --o:#b26a00; --lo:#fff1dc; --r:#c62828; --lr:#fdeaea; --line:#dfe5da; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#14201a; --card:#1d2d24; --ink:#eaf2ea; --mut:#a9b8ac; --g:#7bd17f; --lg:#24382b; --o:#f0b45a; --lo:#3a2f1c; --r:#ff8a80; --lr:#3b2323; --line:#33463a; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--ink); line-height:1.5; }
+  .wrap { max-width:760px; margin:0 auto; padding:14px 14px 90px; }
+  h1 { font-size:1.35rem; margin:8px 0 2px; }
+  .sub { color:var(--mut); font-size:.92rem; margin:0 0 8px; }
+  .bar { position:sticky; top:0; background:var(--bg); padding:8px 0; z-index:5; }
+  .pbar { height:10px; background:var(--line); border-radius:99px; overflow:hidden; }
+  .pbar i { display:block; height:100%; width:0; background:var(--g); transition:width .3s; }
+  .ptxt { font-size:.85rem; color:var(--mut); margin-top:4px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; margin-top:12px; }
+  h2 { font-size:1.12rem; margin:0 0 6px; }
+  .q { font-size:.95rem; }
+  .vi { color:var(--mut); font-size:.88rem; }
+  input[type=text], textarea { width:100%; font:inherit; padding:10px 12px; border:2px solid var(--line); border-radius:10px; background:var(--card); color:var(--ink); }
+  textarea { min-height:110px; resize:vertical; }
+  input:focus, textarea:focus { outline:none; border-color:var(--g); }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:520px){ .two { grid-template-columns:1fr; } }
+  label.l { font-size:.85rem; color:var(--mut); display:block; margin:8px 0 3px; }
+  .bank { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; }
+  .w { border:1px solid var(--line); background:var(--lg); border-radius:99px; padding:3px 10px; font-size:.88rem; cursor:pointer; color:var(--ink); font:inherit; font-size:.88rem; }
+  .w.used { background:var(--g); color:#fff; border-color:var(--g); }
+  .fr { display:flex; flex-direction:column; gap:6px; margin:8px 0; }
+  .fr button { text-align:left; border:1px dashed var(--line); background:transparent; color:var(--ink); border-radius:10px; padding:6px 10px; font:inherit; font-size:.88rem; cursor:pointer; }
+  .meter { font-size:.85rem; color:var(--mut); margin-top:4px; display:flex; gap:12px; flex-wrap:wrap; }
+  .meter b.ok { color:var(--g); } .meter b.no { color:var(--o); }
+  .skip { font-size:.88rem; margin-top:8px; display:flex; gap:6px; align-items:center; color:var(--mut); }
+  button { font:inherit; cursor:pointer; }
+  .primary { background:var(--g); color:#fff; border:0; padding:11px 20px; border-radius:12px; font-weight:700; }
+  .ghost { background:transparent; border:2px solid var(--line); color:var(--ink); padding:9px 16px; border-radius:12px; }
+  .row { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; flex-wrap:wrap; }
+  .tip { background:var(--lo); border-radius:10px; padding:10px 12px; margin:10px 0; font-size:.92rem; }
+  .story { background:var(--card); border:2px solid var(--g); border-radius:16px; padding:18px; margin-top:12px; }
+  .story h3 { margin:0 0 4px; font-size:1.2rem; }
+  .story .sec { margin-top:12px; }
+  .story .sec b { color:var(--g); }
+  .story p { margin:4px 0; font-size:1.02rem; }
+  .modal { position:fixed; inset:0; background:rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center; padding:20px; z-index:20; }
+  .modal .box { background:var(--card); border-radius:14px; padding:18px; max-width:440px; max-height:80vh; overflow:auto; }
+  .hidden { display:none; }
+  ul.warn { padding-left:20px; margin:8px 0; }
+  @media print { .bar, .noprint, .modal { display:none !important; } body { background:#fff; color:#000; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>My Supermarket Trip</h1>
+  <p class="sub">Bài viết về nhà: kể lại buổi đi siêu thị và những đồ ăn em thấy ở từng khu vực. Viết xong em sẽ có một "thẻ chia sẻ" để kể trước lớp.</p>
+  <div class="bar noprint"><div class="pbar"><i id="pbar"></i></div><div class="ptxt" id="ptxt"></div></div>
+
+  <div class="card">
+    <h2>1. Thông tin buổi đi siêu thị</h2>
+    <div class="two">
+      <div><label class="l">Tên em (bắt buộc)</label><input type="text" id="name" placeholder="Nguyễn Văn A"></div>
+      <div><label class="l">Tên siêu thị</label><input type="text" id="shop" placeholder="Ví dụ: Winmart, Co.opmart"></div>
+      <div><label class="l">Em đi khi nào? (When)</label><input type="text" id="when" placeholder="last Sunday morning"></div>
+      <div><label class="l">Em đi với ai? (Who)</label><input type="text" id="who" placeholder="my mum and my sister"></div>
+    </div>
+    <div class="tip">Mẫu mở bài: <i>Last Sunday, I went to [shop] with [who]. We bought food for the week. It was [busy / quiet / big].</i></div>
+    <label class="l">Câu mở bài của em (2 đến 3 câu)</label>
+    <textarea id="intro" data-k="intro" placeholder="Last Sunday, I went to ..."></textarea>
+    <div class="meter"><span id="m-intro"></span></div>
+  </div>
+
+  <div id="areas"></div>
+
+  <div class="card">
+    <h2>8. Quầy thanh toán và cảm nghĩ</h2>
+    <div class="q">At the checkout, how much did you pay? Did you enjoy the trip? Why? <div class="vi">Em trả bao nhiêu tiền? Em thích chuyến đi không? Vì sao?</div></div>
+    <div class="fr">
+      <button type="button" data-ins="intro-end">At the checkout, we paid about ___. It was cheap / a bit expensive.</button>
+      <button type="button" data-ins="intro-end">I enjoyed the trip because ___. Next time, I want to buy ___.</button>
+    </div>
+    <textarea id="end" data-k="end" placeholder="At the checkout, ..."></textarea>
+    <div class="meter"><span id="m-end"></span></div>
+  </div>
+
+  <div class="card noprint">
+    <h2>9. Thẻ chia sẻ</h2>
+    <p class="vi">Bấm để xem bài hoàn chỉnh như một thẻ chia sẻ. Em có thể nghe máy đọc, copy hoặc in.</p>
+    <div class="row"><button class="ghost" id="preview">Xem thẻ chia sẻ</button><button class="primary" id="submit">Nộp bài cho cô</button></div>
+  </div>
+
+  <div id="share"></div>
+</div>
+
+<div class="modal hidden" id="modal"><div class="box"><div id="mtxt"></div><div class="row"><button class="ghost" id="mback">Quay lại sửa</button><button class="primary" id="mgo">Vẫn nộp</button></div></div></div>
+
+<script>
+/* ====== CÀI ĐẶT ====== */
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHIIHnQWgc7rSRzIV8EeX0Y7PobNi8_Kbl9ybE47lxbTn_Z5ecoRcDctajXzLGYIk/exec";
+var LESSON = "Food - My Supermarket Trip";
+var KEY = "food-supermarket-writing-v1";
+var MIN_AREAS = 4, MIN_AREA_WORDS = 25, MIN_TOTAL = 150;
+
+var AREAS = [
+ {k:"fv", t:"2. Khu rau và trái cây", en:"Fruit and Vegetables", e:"🥬",
+  q:"What fruit and vegetables did you see? What did you buy? Were they fresh? Why did you choose them?", vi:"Em thấy trái cây và rau gì? Em mua gì? Chúng có tươi không? Vì sao em chọn?",
+  words:["apple","banana","orange","strawberry","mango","grapes","carrot","tomato","potato","onion","lettuce","cucumber","fresh","sweet"],
+  frames:["In the fruit and vegetable section, I saw ___, ___ and ___.","The ___ looked very fresh, so I bought half a kilo.","My mum chose ___ because ___."]},
+ {k:"mf", t:"3. Khu thịt và cá", en:"Meat and Fish", e:"🥩",
+  q:"What meat and fish were there? Which did your family choose? How much did you buy?", vi:"Có những loại thịt và cá nào? Gia đình em chọn món nào? Em mua bao nhiêu?",
+  words:["beef","pork","chicken","lamb","sausages","bacon","salmon","tuna","prawns","crab","squid","fresh","frozen"],
+  frames:["There was a lot of ___ in the meat section.","We bought a kilo of ___ for dinner.","I don't like ___, but my dad does."]},
+ {k:"de", t:"4. Khu sữa và trứng", en:"Dairy and Eggs", e:"🥛",
+  q:"Which dairy products and eggs did you see or buy? What containers were they in?", vi:"Em thấy hoặc mua sữa, trứng gì? Chúng đựng trong gì?",
+  words:["milk","butter","cheese","eggs","yoghurt","a carton of","a box of","a packet of"],
+  frames:["We bought a carton of ___ and a box of six eggs.","The cheese was in a ___.","Milk is ___ for me because ___."]},
+ {k:"br", t:"5. Khu bánh mì, gạo và mì", en:"Bread, Rice and Pasta", e:"🍞",
+  q:"What bread, rice, pasta or noodles did you see? What did you buy for your family?", vi:"Em thấy bánh mì, gạo, mì gì? Em mua gì cho gia đình?",
+  words:["bread","rice","pasta","noodles","biscuits","cake","a packet of","a loaf of","a bag of"],
+  frames:["In the next section, there was bread, rice and ___.","We bought a packet of ___ and a loaf of ___.","The ___ smelled delicious."]},
+ {k:"sp", t:"6. Khu đồ ngọt và đồ khô", en:"Sweet and Pantry", e:"🍫",
+  q:"Did you see sugar, jam, chocolate, oil, olives or sauces? What did you buy? Was it sweet, salty or spicy?", vi:"Em thấy đường, mứt, sô cô la, dầu, nước mắm không? Em mua gì? Vị thế nào?",
+  words:["sugar","jam","chocolate","olive oil","olives","salt","fish sauce","a jar of","a bottle of","a bar of","sweet","salty","spicy"],
+  frames:["I wanted to buy a bar of ___, but it was too ___.","We needed a bottle of ___ for cooking.","There was a jar of ___ on a high shelf."]},
+ {k:"dr", t:"7. Khu đồ uống", en:"Drinks", e:"🧃",
+  q:"What drinks did you see? Which drinks do you and your family like? Why?", vi:"Em thấy đồ uống gì? Em và gia đình thích loại nào? Vì sao?",
+  words:["juice","water","soda","tea","coffee","a carton of","a can of","a bottle of","cold","sweet"],
+  frames:["There were many drinks: ___, ___ and ___.","I chose a can of ___ because it was cold.","My family drinks ___ every day."]}
+];
+
+var D = {}; /* nội dung nháp */
+function $(id){ return document.getElementById(id); }
+function load(){ try { D = JSON.parse(localStorage.getItem(KEY)||"{}") || {}; } catch(e){ D = {}; } }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(D)); } catch(e){} }
+function wc(s){ var m = (s||"").trim().match(/[A-Za-zÀ-ỹ0-9'’-]+/g); return m ? m.length : 0; }
+function usedWords(a, txt){ var low = " " + (txt||"").toLowerCase().replace(/[^a-z0-9' ]/g," ") + " "; return a.words.filter(function(w){ return low.indexOf(" "+w.toLowerCase()+" ")>=0 || low.indexOf(" "+w.toLowerCase()+"s ")>=0; }); }
+
+function buildAreas(){
+  var box = $("areas"); box.innerHTML = "";
+  AREAS.forEach(function(a){
+    var c = document.createElement("div"); c.className = "card"; c.id = "c-"+a.k;
+    c.innerHTML = '<h2>'+a.e+' '+a.t+': '+a.en+'</h2><div class="q">'+a.q+'<div class="vi">'+a.vi+'</div></div>'+
+      '<div class="bank" id="b-'+a.k+'"></div>'+
+      '<div class="fr" id="f-'+a.k+'"></div>'+
+      '<textarea id="t-'+a.k+'" data-k="'+a.k+'" placeholder="Viết 3 đến 5 câu về khu này..."></textarea>'+
+      '<div class="meter" id="m-'+a.k+'"></div>'+
+      '<label class="skip"><input type="checkbox" id="s-'+a.k+'"> Em không đi khu này (tối thiểu '+MIN_AREAS+' khu có bài viết)</label>';
+    box.appendChild(c);
+    var b = $("b-"+a.k);
+    a.words.forEach(function(w){ var x = document.createElement("button"); x.type="button"; x.className="w"; x.textContent=w; x.onclick=function(){ insert(a.k, w); }; b.appendChild(x); });
+    var f = $("f-"+a.k);
+    a.frames.forEach(function(s){ var x = document.createElement("button"); x.type="button"; x.textContent=s; x.onclick=function(){ insert(a.k, s+" "); }; f.appendChild(x); });
+    var t = $("t-"+a.k); t.value = D[a.k] || "";
+    t.oninput = function(){ D[a.k] = t.value; save(); update(); };
+    var s = $("s-"+a.k); s.checked = !!D["skip-"+a.k];
+    s.onchange = function(){ D["skip-"+a.k] = s.checked; save(); update(); };
+  });
+}
+function insert(k, text){
+  var t = $("t-"+k), v = t.value, p = t.selectionStart==null ? v.length : t.selectionStart;
+  var pre = v.slice(0,p), post = v.slice(p);
+  var sp = (pre && !/\s$/.test(pre)) ? " " : "";
+  t.value = pre + sp + text + (/\s$/.test(text)?"":" ") + post;
+  D[k] = t.value; save(); t.focus(); update();
+}
+document.addEventListener("click", function(e){
+  var b = e.target.closest("[data-ins]"); if (!b) return;
+  var t = $("end"); t.value = (t.value ? t.value+" " : "") + b.textContent.replace(/\s+/g," ").trim(); D.end = t.value; save(); t.focus(); update();
+});
+
+function areaState(a){
+  var txt = D[a.k]||"", n = wc(txt), used = usedWords(a, txt);
+  return {n:n, used:used, ok: n>=MIN_AREA_WORDS && used.length>=3, skip: !!D["skip-"+a.k]};
+}
+function update(){
+  var total = wc(D.intro) + wc(D.end), doneAreas = 0;
+  AREAS.forEach(function(a){
+    var st = areaState(a); total += st.skip ? 0 : st.n;
+    if (!st.skip && st.ok) doneAreas++;
+    var t = $("t-"+a.k); t.disabled = st.skip; $("c-"+a.k).style.opacity = st.skip ? .55 : 1;
+    Array.prototype.forEach.call($("b-"+a.k).children, function(x){ x.classList.toggle("used", st.used.indexOf(x.textContent)>=0 || st.used.indexOf(x.textContent.replace(/s$/,""))>=0); });
+    $("m-"+a.k).innerHTML = st.skip ? 'Đã bỏ qua khu này' : '<span><b class="'+(st.n>=MIN_AREA_WORDS?'ok':'no')+'">'+st.n+'</b> từ (gợi ý từ '+MIN_AREA_WORDS+')</span><span>Từ khu này đã dùng: <b class="'+(st.used.length>=3?'ok':'no')+'">'+st.used.length+'</b>/3 trở lên</span>';
+  });
+  $("m-intro").innerHTML = '<b class="'+(wc(D.intro)>=15?'ok':'no')+'">'+wc(D.intro)+'</b> từ (gợi ý từ 15)';
+  $("m-end").innerHTML = '<b class="'+(wc(D.end)>=15?'ok':'no')+'">'+wc(D.end)+'</b> từ (gợi ý từ 15)';
+  var parts = [($("name").value.trim()?1:0), (wc(D.intro)>=15?1:0), Math.min(doneAreas/MIN_AREAS,1), (wc(D.end)>=15?1:0), (total>=MIN_TOTAL?1:0)];
+  var pct = Math.round(parts.reduce(function(a,b){return a+b;},0)/parts.length*100);
+  $("pbar").style.width = pct+"%";
+  $("ptxt").textContent = "Hoàn thành khoảng "+pct+"% · "+total+" từ · "+doneAreas+"/"+MIN_AREAS+" khu đủ yêu cầu";
+}
+
+/* nhập thông tin */
+["name","shop","when","who"].forEach(function(id){ $(id).oninput = function(){ D[id] = $(id).value; save(); update(); }; });
+$("intro").oninput = function(){ D.intro = this.value; save(); update(); };
+$("end").oninput = function(){ D.end = this.value; save(); update(); };
+
+function fullText(){
+  var out = [], title = "My trip to " + (D.shop||"the supermarket");
+  var lines = [];
+  if (D.intro) lines.push(D.intro.trim());
+  AREAS.forEach(function(a){ if (!D["skip-"+a.k] && (D[a.k]||"").trim()) lines.push({h:a.e+" "+a.en, t:D[a.k].trim()}); });
+  if (D.end) lines.push(D.end.trim());
+  return {title:title, items:lines};
+}
+function shareHTML(){
+  var f = fullText(), h = '<div class="story"><h3>'+esc(f.title)+'</h3><div class="vi">'+esc([D.name, D.when, D.who ? "with "+D.who : ""].filter(Boolean).join(" · "))+'</div>';
+  f.items.forEach(function(x){ h += typeof x==="string" ? '<p>'+esc(x)+'</p>' : '<div class="sec"><b>'+esc(x.h)+'</b><p>'+esc(x.t)+'</p></div>'; });
+  h += '</div><div class="card noprint"><h2>Khi chia sẻ trước lớp</h2><p class="vi">Mời các bạn hỏi em:</p><ul><li>What did you see in the fruit section?</li><li>What did you buy for your family?</li><li>Which section did you like best? Why?</li><li>How much did you pay?</li></ul>'+
+    '<div class="row"><button class="ghost" id="say">🔊 Nghe máy đọc</button><button class="ghost" id="copy">Copy bài</button><button class="ghost" id="print">In bài</button></div></div>';
+  return h;
+}
+function esc(s){ return String(s).replace(/[&<>]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c];}); }
+function plain(){
+  var f = fullText(), t = f.title + "\n" + [D.name, D.when, D.who ? "with "+D.who : ""].filter(Boolean).join(" · ") + "\n\n";
+  f.items.forEach(function(x){ t += (typeof x==="string" ? x : x.h+": "+x.t) + "\n\n"; });
+  return t.trim();
+}
+$("preview").onclick = function(){
+  var s = $("share"); s.innerHTML = shareHTML(); s.scrollIntoView({behavior:"smooth"});
+  $("say").onclick = function(){ try { var u = new SpeechSynthesisUtterance(plain().replace(/[\u{1F300}-\u{1FAFF}]/gu,"")); u.lang="en-GB"; u.rate=.9; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch(e){} };
+  $("copy").onclick = function(){ try { navigator.clipboard.writeText(plain()); this.textContent = "Đã copy"; } catch(e){ alert("Không copy được, hãy chọn và copy thủ công."); } };
+  $("print").onclick = function(){ window.print(); };
+};
+
+/* nộp bài */
+function warnings(){
+  var w = [], total = wc(D.intro)+wc(D.end), done = 0;
+  if (!($("name").value||"").trim()) w.push("Em chưa nhập tên.");
+  if (wc(D.intro) < 15) w.push("Câu mở bài còn ngắn (dưới 15 từ).");
+  AREAS.forEach(function(a){ var st = areaState(a); if (st.skip) return; total += st.n; if (st.ok) done++; else if (st.n>0) w.push(a.en+": "+st.n+" từ, dùng "+st.used.length+" từ vựng của khu (cần "+MIN_AREA_WORDS+" từ và 3 từ vựng)."); });
+  if (done < MIN_AREAS) w.push("Mới có "+done+" khu đủ yêu cầu (cần "+MIN_AREAS+" khu).");
+  if (wc(D.end) < 15) w.push("Phần kết còn ngắn (dưới 15 từ).");
+  if (total < MIN_TOTAL) w.push("Cả bài mới có "+total+" từ (gợi ý từ "+MIN_TOTAL+" từ).");
+  return w;
+}
+var SKIPPED = 0;
+$("submit").onclick = function(){
+  if (!($("name").value||"").trim()) { alert("Em hãy nhập tên trước khi nộp."); $("name").focus(); return; }
+  var w = warnings();
+  if (!w.length) return send();
+  $("mtxt").innerHTML = "<b>Bài của em chưa đủ yêu cầu:</b><ul class='warn'>"+w.map(function(x){return "<li>"+esc(x)+"</li>";}).join("")+"</ul>";
+  $("modal").classList.remove("hidden");
+};
+$("mback").onclick = function(){ $("modal").classList.add("hidden"); };
+$("mgo").onclick = function(){ SKIPPED++; $("modal").classList.add("hidden"); send(); };
+
+function send(){
+  var btn = $("submit"); btn.disabled = true; btn.textContent = "Đang gửi...";
+  var total = wc(D.intro)+wc(D.end), details = [];
+  details.push({part:"Viết - Mở bài", question:"Intro", answer:D.intro||"", correct:"", result:wc(D.intro)+" từ"});
+  AREAS.forEach(function(a){ var st = areaState(a); total += st.skip?0:st.n; details.push({part:"Viết - "+a.en, question:a.q, answer: st.skip ? "(không đi khu này)" : (D[a.k]||""), correct:"", result: st.skip ? "bỏ qua" : st.n+" từ · từ vựng khu: "+st.used.join(", ")}); });
+  details.push({part:"Viết - Kết", question:"Checkout and feelings", answer:D.end||"", correct:"", result:wc(D.end)+" từ"});
+  var para = "Tổng " + total + " từ · " + (SKIPPED ? "CHƯA ĐẠT YÊU CẦU · đã bỏ qua cảnh báo "+SKIPPED+" lần" : "ĐẠT YÊU CẦU") + " · " + (D.shop||"") + " · " + (D.when||"") + " · " + (D.who||"") + "\n\n" + plain();
+  var payload = {type:"submit", name:$("name").value.trim(), lesson:LESSON, summary:{vocab:"", gram:"", ctx:"", rec:"", para:para, feedback:""}, details:details};
+  fetch(SCRIPT_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(payload)})
+    .then(function(r){ return r.json(); })
+    .then(function(j){ if (!j.ok) throw new Error(j.error||"error"); btn.textContent = "Đã nộp ✅"; alert("Em đã nộp bài thành công! Cô sẽ đọc và nhận xét."); })
+    .catch(function(){ btn.disabled = false; btn.textContent = "Nộp bài cho cô"; alert("Chưa gửi được bài. Em hãy bấm \"Xem thẻ chia sẻ\", copy bài và gửi cho cô, hoặc thử lại khi có mạng."); });
+}
+
+load();
+["name","shop","when","who"].forEach(function(id){ $(id).value = D[id]||""; });
+$("intro").value = D.intro||""; $("end").value = D.end||"";
+buildAreas(); update();
+</script>
+</body>
+</html>
