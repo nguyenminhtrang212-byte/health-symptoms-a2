@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Professional Ingredients 2: Vegetables, Herbs, Spices and Pantry</title>
+<style>
+  :root { --bg:#f6f7f2; --card:#fff; --ink:#1f2a1f; --mut:#5d695f; --g:#2e7d32; --lg:#e8f3e8; --o:#b26a00; --lo:#fff1dc; --r:#c62828; --lr:#fdeaea; --line:#dfe5da; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#14201a; --card:#1d2d24; --ink:#eaf2ea; --mut:#a9b8ac; --g:#7bd17f; --lg:#24382b; --o:#f0b45a; --lo:#3a2f1c; --r:#ff8a80; --lr:#3b2323; --line:#33463a; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--ink); line-height:1.5; }
+  .wrap { max-width:720px; margin:0 auto; padding:14px 14px 80px; }
+  h1 { font-size:1.35rem; margin:8px 0 2px; }
+  .sub, .vi { color:var(--mut); font-size:.9rem; }
+  .bar { position:sticky; top:0; background:var(--bg); padding:8px 0; z-index:5; }
+  .pbar { height:10px; background:var(--line); border-radius:99px; overflow:hidden; }
+  .pbar i { display:block; height:100%; width:0; background:var(--g); transition:width .3s; }
+  .ptxt { font-size:.85rem; color:var(--mut); margin:4px 0; }
+  .chips { display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+  .chip { border:2px solid var(--line); background:var(--card); color:var(--ink); border-radius:99px; padding:5px 11px; font:inherit; font-size:.84rem; cursor:pointer; }
+  .chip.on { border-color:var(--g); background:var(--lg); font-weight:700; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; margin-top:12px; }
+  h2 { font-size:1.12rem; margin:0 0 6px; }
+  h3 { font-size:1rem; margin:14px 0 4px; color:var(--g); }
+  input[type=text] { width:100%; font:inherit; padding:10px 12px; border:2px solid var(--line); border-radius:10px; background:var(--card); color:var(--ink); }
+  input:focus { outline:none; border-color:var(--g); }
+  button { font:inherit; cursor:pointer; }
+  .primary { background:var(--g); color:#fff; border:0; padding:11px 20px; border-radius:12px; font-weight:700; }
+  .primary:disabled { opacity:.45; cursor:default; }
+  .ghost { background:transparent; border:2px solid var(--line); color:var(--ink); padding:9px 16px; border-radius:12px; }
+  .row { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; flex-wrap:wrap; }
+  .play { display:flex; gap:10px; justify-content:center; margin:14px 0; }
+  .fb { margin-top:10px; padding:10px 12px; border-radius:10px; font-size:.95rem; }
+  .fb.ok { background:var(--lg); color:var(--g); } .fb.no { background:var(--lr); color:var(--r); }
+  .tip { background:var(--lo); border-radius:10px; padding:10px 12px; margin:10px 0; font-size:.92rem; }
+  .opt { display:block; width:100%; text-align:left; margin:6px 0; padding:10px 12px; border:2px solid var(--line); background:var(--card); color:var(--ink); border-radius:10px; }
+  .opt.good { border-color:var(--g); background:var(--lg); } .opt.bad { border-color:var(--r); background:var(--lr); }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  @media (max-width:520px){ .grid { grid-template-columns:1fr; } }
+  .wc { border:1px solid var(--line); border-radius:12px; padding:10px 12px; }
+  .wc .w { font-size:1.1rem; font-weight:700; display:flex; justify-content:space-between; align-items:center; gap:8px; }
+  .wc .ipa { color:var(--mut); font-size:.9rem; } .wc .ex { font-size:.88rem; margin-top:4px; font-style:italic; }
+  .wc button { border:0; background:var(--lg); border-radius:99px; padding:4px 10px; }
+  .rec { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:10px; }
+  .rec.live button.r { background:var(--r); color:#fff; border-color:var(--r); }
+  .done { color:var(--g); font-weight:700; }
+  .modal { position:fixed; inset:0; background:rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center; padding:20px; z-index:20; }
+  .modal .box { background:var(--card); border-radius:14px; padding:18px; max-width:420px; }
+  .hidden, .modal.hidden { display:none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Professional Ingredients 2: Vegetables, Herbs, Spices and Pantry</h1>
+  <p class="sub">Từ vựng nguyên liệu chuyên nghiệp (rau củ, rau thơm, gia vị, đồ khô) dùng trong bếp và nhà hàng. Học khoảng <b>30 phút</b>, không bấm giờ: em học theo tốc độ của mình. Làm xong bước trước mới mở bước sau.</p>
+  <div class="card"><label class="vi">Tên em (bắt buộc, để cô biết bài của em)</label><input type="text" id="name" placeholder="Nguyễn Văn A"></div>
+  <div class="bar"><div class="pbar"><i id="pbar"></i></div><div class="ptxt" id="ptxt"></div><div class="chips" id="chips"></div></div>
+  <div id="main"></div>
+</div>
+<div class="modal hidden" id="modal"><div class="box"><p id="mtxt"></p><div class="row"><span></span><button class="primary" id="mok">Đã hiểu</button></div></div></div>
+
+<script>
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHIIHnQWgc7rSRzIV8EeX0Y7PobNi8_Kbl9ybE47lxbTn_Z5ecoRcDctajXzLGYIk/exec";
+var DATA = {"id": "veg-herbs-pantry", "lesson": "Food Pro 2 - Veg Herbs Pantry", "groups": [{"t": "Rau củ", "words": [{"w": "spinach", "ipa": "/ˈspɪnɪtʃ/", "vi": "rau chân vịt", "ex": "Add the ___ to the soup at the end."}, {"w": "broccoli", "ipa": "/ˈbrɒkəli/", "vi": "súp lơ xanh", "ex": "Steam the ___ for three minutes."}, {"w": "cabbage", "ipa": "/ˈkæbɪdʒ/", "vi": "bắp cải", "ex": "Slice the ___ very thinly for the salad."}, {"w": "aubergine", "ipa": "/ˈəʊbəʒiːn/", "vi": "cà tím", "ex": "Grill the ___ until it is soft."}, {"w": "courgette", "ipa": "/kɔːˈʒet/", "vi": "bí ngòi", "ex": "Cut the ___ into long thin strips."}, {"w": "mushroom", "ipa": "/ˈmʌʃruːm/", "vi": "nấm", "ex": "Fry the ___ with a little garlic."}]}, {"t": "Rau thơm và gia vị", "words": [{"w": "garlic", "ipa": "/ˈɡɑːlɪk/", "vi": "tỏi", "ex": "Crush two cloves of ___."}, {"w": "ginger", "ipa": "/ˈdʒɪndʒə(r)/", "vi": "gừng", "ex": "Add fresh ___ to give the soup a warm taste."}, {"w": "chilli", "ipa": "/ˈtʃɪli/", "vi": "ớt", "ex": "Take the seeds out of the ___ if you don't like it too hot."}, {"w": "basil", "ipa": "/ˈbæzl/", "vi": "húng quế", "ex": "Tear fresh ___ leaves over the pizza."}, {"w": "coriander", "ipa": "/ˌkɒriˈændə(r)/", "vi": "rau mùi (ngò)", "ex": "Sprinkle chopped ___ on the curry."}, {"w": "mint", "ipa": "/mɪnt/", "vi": "bạc hà", "ex": "Put some ___ in the tea."}, {"w": "pepper", "ipa": "/ˈpepə(r)/", "vi": "tiêu", "ex": "Add salt and black ___ to taste."}, {"w": "cinnamon", "ipa": "/ˈsɪnəmən/", "vi": "quế", "ex": "Sprinkle ___ on the apple cake."}]}, {"t": "Đồ khô, dầu và nước sốt", "words": [{"w": "flour", "ipa": "/ˈflaʊə(r)/", "vi": "bột mì", "ex": "Sift the ___ into a large bowl."}, {"w": "yeast", "ipa": "/jiːst/", "vi": "men nở", "ex": "Bread needs ___ to rise."}, {"w": "olive oil", "ipa": "/ˌɒlɪv ˈɔɪl/", "vi": "dầu ô liu", "ex": "Drizzle ___ over the salad."}, {"w": "vinegar", "ipa": "/ˈvɪnɪɡə(r)/", "vi": "giấm", "ex": "Mix oil and ___ to make a dressing."}, {"w": "soy sauce", "ipa": "/ˌsɔɪ ˈsɔːs/", "vi": "nước tương", "ex": "Add a spoonful of ___ to the fried rice."}, {"w": "honey", "ipa": "/ˈhʌni/", "vi": "mật ong", "ex": "Pour ___ on the yoghurt."}]}], "title": "Professional Ingredients 2: Vegetables, Herbs, Spices and Pantry", "intro": "Từ vựng nguyên liệu chuyên nghiệp (rau củ, rau thơm, gia vị, đồ khô) dùng trong bếp và nhà hàng.", "tip": "<b>Lưu ý:</b> <i>aubergine</i> và <i>courgette</i> là tiếng Anh Anh (tiếng Anh Mỹ: <i>eggplant</i>, <i>zucchini</i>). <i>coriander</i> trong tiếng Anh Mỹ là phần lá gọi là <i>cilantro</i>. <i>chilli</i> viết hai chữ l trong tiếng Anh Anh."};
+var LESSON = DATA.lesson, KEY = "pro-" + DATA.id + "-v1";
+var ALL = []; DATA.groups.forEach(function(g){ g.words.forEach(function(w){ ALL.push(w); }); });
+var N = ALL.length, RG = 5; /* mỗi bản ghi âm 5 từ */
+var NREC = Math.ceil(N/RG);
+var STEPS = [
+ {t:"① Học từ", m:"~8 phút"}, {t:"② Nghe chọn nghĩa", m:"~5 phút"}, {t:"③ Nghe và viết", m:"~7 phút"},
+ {t:"④ Điền vào câu", m:"~5 phút"}, {t:"⑤ Ghi âm", m:"~5 phút"}, {t:"⑥ Nộp bài", m:""}
+];
+var S = {name:"", step:0, tick:false, q:[[],[],[],[]], first:[[],[],[],[]], di:0, dtry:0, sent:[]};
+var BLOBS = [], RECS = [];
+function $(id){ return document.getElementById(id); }
+function load(){ try { var j = JSON.parse(localStorage.getItem(KEY)||"null"); if (j) for (var k in j) S[k] = j[k]; } catch(e){} }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+function alertBox(t){ $("mtxt").textContent = t; $("modal").classList.remove("hidden"); }
+$("mok").onclick = function(){ $("modal").classList.add("hidden"); };
+function say(t, slow){ try { var u = new SpeechSynthesisUtterance(t); u.lang = "en-GB"; u.rate = slow ? .55 : .9; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch(e){} }
+
+/* tiến độ */
+function qDone(k){ return S.first[k].length >= N; }
+function recDone(){ for (var i=0;i<NREC;i++) if (!S.sent[i]) return false; return true; }
+function stepDone(i){ return i===0 ? S.tick : i<=3 ? qDone(i-1) : i===4 ? recDone() : !!S.submitted; }
+function unlocked(i){ for (var j=0;j<i;j++) if (!stepDone(j)) return false; return true; }
+function pct(){
+  var t = (S.tick?1:0) + [0,1,2].reduce(function(a,k){ return a + Math.min(S.first[k].length/N,1); }, 0) + Math.min(S.first[3].length/N,1);
+  var c = 0; for (var i=0;i<NREC;i++) if (S.sent[i]) c++;
+  return Math.round((t + c/NREC + (S.submitted?1:0))/6*100);
+}
+function needName(){ if (!($("name").value||"").trim()) { alertBox("Em hãy nhập tên trước khi làm bài."); $("name").focus(); return true; } return false; }
+function head(){
+  $("pbar").style.width = pct()+"%"; $("ptxt").textContent = "Hoàn thành " + pct() + "%";
+  var c = $("chips"); c.innerHTML = "";
+  STEPS.forEach(function(s,i){
+    var b = document.createElement("button"); b.className = "chip" + (S.step===i?" on":"");
+    b.textContent = (stepDone(i)?"✅ ":(unlocked(i)?"":"🔒 ")) + s.t;
+    b.onclick = function(){ if (!unlocked(i)) { alertBox("Hãy hoàn thành bước " + STEPS[i-1].t + " trước nhé."); return; } S.step = i; save(); render(); };
+    c.appendChild(b);
+  });
+}
+function render(){ head(); if (S.step===0) renderLearn(); else if (S.step<=3) renderQuiz(S.step-1); else if (S.step===4) renderRec(); else renderSubmit(); }
+function next(){ S.step++; save(); render(); window.scrollTo(0,0); }
+
+/* ① học từ */
+function renderLearn(){
+  var h = '<div class="card"><h2>① Học từ ('+N+' từ)</h2><p class="vi">Bấm 🔊 để nghe từng từ và đọc theo to. Đọc kỹ nghĩa và câu ví dụ. '+STEPS[0].m+'.</p>';
+  DATA.groups.forEach(function(g, gi){
+    h += '<h3>'+esc(g.t)+'</h3><div class="grid">';
+    g.words.forEach(function(w){ h += '<div class="wc"><div class="w"><span>'+esc(w.w)+'</span><button data-say="'+esc(w.w)+'" aria-label="nghe">🔊</button></div><div class="ipa">'+esc(w.ipa)+'</div><div>'+esc(w.vi)+'</div><div class="ex">'+esc(w.ex.replace("___", w.w))+'</div></div>'; });
+    h += '</div>';
+  });
+  h += '<div class="tip">'+DATA.tip+'</div><label class="row" style="justify-content:flex-start"><input type="checkbox" id="tick"'+(S.tick?" checked":"")+'> Em đã đọc và nghe kỹ các từ</label><div class="row"><span></span><button class="primary" id="go">Làm bài tập ▶</button></div></div>';
+  $("main").innerHTML = h;
+  Array.prototype.forEach.call(document.querySelectorAll("[data-say]"), function(b){ b.onclick = function(){ say(b.dataset.say); }; });
+  $("tick").onchange = function(){ S.tick = this.checked; save(); head(); };
+  $("go").onclick = function(){ if (!S.tick) { alertBox('Em hãy đọc kỹ phần từ vựng và tick "Em đã đọc và nghe kỹ" trước khi làm bài tập.'); return; } next(); };
+}
+
+/* ②③④ bài tập */
+function opts(i, pool){ var c = [i, (i+7)%N, (i+13)%N]; var r = i%3, o = c.slice(r).concat(c.slice(0,r)); return o; }
+function renderQuiz(k){
+  var i = S.q[k].length ? S.q[k].length : 0; /* số câu đã đúng */
+  var idx = k===2 ? (N-1-i) : i; /* ④ đảo thứ tự */
+  var m = $("main");
+  if (qDone(k)) {
+    var ok = S.first[k].filter(Boolean).length;
+    m.innerHTML = '<div class="card"><h2>'+STEPS[k+1].t+': xong rồi!</h2><p>Em đúng ngay lần đầu <b>'+ok+'/'+N+'</b> câu.</p><div class="row"><span></span><button class="primary" id="go">Bước tiếp theo ▶</button></div></div>';
+    $("go").onclick = next; return;
+  }
+  var w = ALL[idx], title = '<h2>'+STEPS[k+1].t+' ('+(i+1)+'/'+N+')</h2>';
+  if (k===0 || k===2) {
+    var o = opts(idx), good = o.indexOf(idx);
+    m.innerHTML = '<div class="card">'+title+'<p class="vi">'+(k===0?'Nghe từ rồi chọn nghĩa tiếng Việt đúng.':'Đọc câu rồi chọn từ đúng điền vào chỗ trống.')+'</p>'+
+      (k===0 ? '<div class="play"><button class="primary" id="p1">🔊 Nghe</button><button class="ghost" id="p2">🐢 Chậm</button></div>' : '<p style="font-size:1.1rem">'+esc(w.ex)+'</p><p class="vi">Gợi ý nghĩa: '+esc(w.vi)+'</p>')+
+      '<div id="os"></div><div id="fb"></div><div class="row"><span></span><button class="primary hidden" id="nx">Câu tiếp ▶</button></div></div>';
+    if (k===0) { $("p1").onclick = function(){ say(w.w); }; $("p2").onclick = function(){ say(w.w, true); }; say(w.w); }
+    var tried = false;
+    o.forEach(function(j, p){
+      var b = document.createElement("button"); b.className = "opt"; b.textContent = k===0 ? ALL[j].vi : ALL[j].w;
+      b.onclick = function(){
+        if (b.classList.contains("good")) return;
+        if (p === good) {
+          b.classList.add("good"); S.q[k].push(1); S.first[k].push(!tried); save();
+          $("fb").className = "fb ok"; $("fb").innerHTML = '✅ Đúng! <b>'+esc(w.w)+'</b> '+esc(w.ipa)+' = '+esc(w.vi);
+          Array.prototype.forEach.call($("os").children, function(x){ x.disabled = true; });
+          say(k===0 ? w.w : w.ex.replace("___", w.w)); $("nx").classList.remove("hidden"); head();
+          $("nx").textContent = (i===N-1) ? "Xem kết quả ▶" : "Câu tiếp ▶"; $("nx").onclick = function(){ render(); window.scrollTo(0,0); };
+        } else { tried = true; b.classList.add("bad"); b.disabled = true; $("fb").className = "fb no"; $("fb").textContent = "Chưa đúng, em thử lại nhé."; }
+      };
+      $("os").appendChild(b);
+    });
+    return;
+  }
+  /* k===1: nghe và viết */
+  m.innerHTML = '<div class="card">'+title+'<p class="vi">Bấm nghe, rồi gõ từ em nghe được. Em nghe lại bao nhiêu lần cũng được.</p><div class="play"><button class="primary" id="p1">🔊 Nghe</button><button class="ghost" id="p2">🐢 Nghe chậm</button></div>'+
+    '<input type="text" id="ans" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Gõ từ em nghe được"><div id="fb"></div><div class="row"><span></span><button class="primary" id="chk">Kiểm tra</button></div></div>';
+  $("p1").onclick = function(){ say(w.w); }; $("p2").onclick = function(){ say(w.w, true); };
+  var a = $("ans"); a.focus(); say(w.w);
+  function check(){
+    var v = a.value.trim().toLowerCase().replace(/\s+/g," "), fb = $("fb"); if (!v) return;
+    if (v === w.w.toLowerCase()) {
+      S.q[k].push(1); S.first[k].push(S.dtry === 0); S.dtry = 0; save(); head();
+      fb.className = "fb ok"; fb.innerHTML = '✅ Đúng! <b>'+esc(w.w)+'</b> '+esc(w.ipa)+' = '+esc(w.vi);
+      $("chk").textContent = i===N-1 ? "Xem kết quả ▶" : "Từ tiếp ▶"; $("chk").onclick = function(){ render(); window.scrollTo(0,0); }; a.disabled = true; say(w.w);
+    } else {
+      S.dtry++; save(); fb.className = "fb no";
+      var hint = S.dtry >= 2 ? '<br>Gợi ý: từ này có <b>'+w.w.replace(/ /g,"").length+'</b> chữ cái, bắt đầu bằng <b>'+w.w[0]+'</b>.' : "";
+      if (S.dtry >= 4) hint += '<br>Đáp án: <b>'+esc(w.w)+'</b> '+esc(w.ipa)+' ('+esc(w.vi)+'). Em gõ lại để nhớ nhé.';
+      fb.innerHTML = "Chưa đúng, em nghe lại nhé." + hint; a.select();
+    }
+  }
+  $("chk").onclick = check; a.onkeydown = function(e){ if (e.key === "Enter") { if (a.disabled) $("chk").click(); else check(); } };
+}
+
+/* ⑤ ghi âm */
+function renderRec(){
+  var h = '<div class="card"><h2>⑤ Ghi âm đọc to</h2><p class="vi">Nghe mẫu, rồi đọc cả nhóm từ, nghe lại và bấm gửi cho cô. Bấm ghi âm lần nữa để dừng. '+STEPS[4].m+'.</p></div>';
+  for (var g=0; g<NREC; g++) {
+    var ws = ALL.slice(g*RG, g*RG+RG);
+    h += '<div class="card"><h2>Nhóm '+(g+1)+' <button class="ghost" data-say="'+esc(ws.map(function(x){return x.w;}).join(", "))+'">🔊 Nghe mẫu</button></h2><p>'+ws.map(function(x){ return '<b>'+esc(x.w)+'</b> <span class="vi">'+esc(x.ipa)+'</span>'; }).join(" · ")+'</p>'+
+      '<div class="rec" id="rec'+g+'"><button class="ghost r" data-rec="'+g+'">🎙 Ghi âm</button><audio controls class="hidden" id="au'+g+'"></audio><button class="primary hidden" data-send="'+g+'">📤 Gửi cho cô</button><span id="st'+g+'" class="vi">'+(S.sent[g]?'<span class="done">✅ Đã gửi</span>':'')+'</span></div></div>';
+  }
+  h += '<div class="row"><span class="vi">Gửi đủ '+NREC+' nhóm để sang bước nộp bài.</span><button class="primary" id="go">Sang bước nộp bài ▶</button></div>';
+  $("main").innerHTML = h;
+  Array.prototype.forEach.call(document.querySelectorAll("[data-say]"), function(b){ b.onclick = function(){ say(b.dataset.say); }; });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-rec]"), function(b){ b.onclick = function(){ toggleRec(+b.dataset.rec, b); }; });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-send]"), function(b){ b.onclick = function(){ sendAudio(+b.dataset.send, b); }; });
+  $("go").onclick = function(){ if (!recDone()) { alertBox("Em cần ghi âm và gửi đủ "+NREC+" nhóm trước khi nộp bài."); return; } next(); };
+}
+function toggleRec(i, btn){
+  if (needName()) return;
+  var box = $("rec"+i);
+  if (RECS[i] && RECS[i].state === "recording") { RECS[i].stop(); return; }
+  if (!navigator.mediaDevices || !window.MediaRecorder) { alertBox("Trình duyệt này không ghi âm được. Em hãy mở bằng Chrome hoặc Safari."); return; }
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    var chunks = [], r = new MediaRecorder(stream); RECS[i] = r;
+    r.ondataavailable = function(e){ if (e.data && e.data.size) chunks.push(e.data); };
+    r.onstop = function(){
+      stream.getTracks().forEach(function(t){ t.stop(); });
+      var blob = new Blob(chunks, {type: r.mimeType || "audio/webm"}); BLOBS[i] = blob;
+      var au = $("au"+i); au.src = URL.createObjectURL(blob); au.classList.remove("hidden");
+      box.querySelector("[data-send]").classList.remove("hidden"); box.classList.remove("live"); btn.textContent = "🎙 Ghi lại";
+      S.sent[i] = false; save(); $("st"+i).textContent = "Nghe lại, rồi bấm Gửi nhé."; head();
+    };
+    r.start(); box.classList.add("live"); btn.textContent = "⏹ Dừng";
+  }).catch(function(){ alertBox("Em cần bấm Cho phép micro trên trình duyệt để ghi âm."); });
+}
+function blobToB64(b){ return new Promise(function(res, rej){ var f = new FileReader(); f.onload = function(){ res(String(f.result).split(",")[1]); }; f.onerror = rej; f.readAsDataURL(b); }); }
+function post(o){ return fetch(SCRIPT_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(o)}).then(function(r){ return r.json(); }).then(function(j){ if (!j.ok) throw new Error(j.error||"error"); return j; }); }
+function sendAudio(i, btn){
+  if (!BLOBS[i]) return; var name = $("name").value.trim(); if (!name) { needName(); return; }
+  btn.disabled = true; $("st"+i).textContent = "Đang gửi...";
+  var mime = BLOBS[i].type || "audio/webm", ext = /mp4|aac/.test(mime) ? "m4a" : /ogg/.test(mime) ? "ogg" : "webm";
+  var ws = ALL.slice(i*RG, i*RG+RG).map(function(x){ return x.w; }).join(", ");
+  blobToB64(BLOBS[i]).then(function(b64){ return post({type:"audio", name:name, lesson:LESSON, file:"Doc_0"+(i+1)+"."+ext, audio:b64, mime:mime, label:"Đọc nhóm "+(i+1), target:ws, transcript:""}); })
+   .then(function(){ S.sent[i] = true; save(); $("st"+i).innerHTML = '<span class="done">✅ Đã gửi</span>'; btn.disabled = false; head(); })
+   .catch(function(){ btn.disabled = false; $("st"+i).textContent = "Chưa gửi được, em kiểm tra mạng rồi bấm Gửi lại."; });
+}
+
+/* ⑥ nộp */
+function sc(k){ return S.first[k].filter(Boolean).length; }
+function renderSubmit(){
+  $("main").innerHTML = '<div class="card"><h2>⑥ Nộp bài</h2><p>Nghe chọn nghĩa: <b>'+sc(0)+'/'+N+'</b> · Nghe và viết: <b>'+sc(1)+'/'+N+'</b> · Điền vào câu: <b>'+sc(2)+'/'+N+'</b> (đúng ngay lần đầu) · Đã gửi <b>'+NREC+'</b> bản ghi âm.</p><div class="row"><span id="msg" class="vi"></span><button class="primary" id="sub">Nộp bài cho cô</button></div></div>';
+  if (S.submitted) { $("sub").textContent = "Đã nộp ✅"; $("sub").disabled = true; }
+  $("sub").onclick = function(){
+    var name = $("name").value.trim(); if (!name) { needName(); return; }
+    var b = $("sub"); b.disabled = true; b.textContent = "Đang gửi...";
+    var names = ["Nghe chọn nghĩa","Nghe và viết","Điền vào câu"], details = [];
+    for (var k=0;k<3;k++) S.first[k].forEach(function(ok,i){ var idx = k===2 ? N-1-i : i; if (!ok) details.push({part:names[k], question:ALL[idx].w, answer:"sai ngay lần đầu", correct:ALL[idx].w, result:"cần ôn"}); });
+    details.push({part:"Tổng kết", question:"Số câu đúng ngay lần đầu", answer:sc(0)+" / "+sc(1)+" / "+sc(2)+" trên "+N, correct:"", result:""});
+    post({type:"submit", name:name, lesson:LESSON, summary:{vocab:"Nghe chọn nghĩa "+sc(0)+"/"+N+" · Nghe viết "+sc(1)+"/"+N, gram:"", ctx:"Điền vào câu "+sc(2)+"/"+N, rec:"Đã gửi "+NREC+" bản ghi âm", para:"", feedback:""}, details:details})
+     .then(function(){ S.submitted = true; save(); head(); b.textContent = "Đã nộp ✅"; alertBox("Em đã nộp bài thành công! Cô sẽ nghe và nhận xét."); })
+     .catch(function(){ b.disabled = false; b.textContent = "Nộp bài cho cô"; alertBox("Chưa nộp được. Em kiểm tra mạng rồi bấm lại nhé."); });
+  };
+}
+
+load();
+$("name").value = S.name || ""; $("name").oninput = function(){ S.name = this.value; save(); };
+if (!unlocked(S.step)) S.step = 0;
+render();
+</script>
+</body>
+</html>
