@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Food: từ vựng, hỏi vị và nói vị (dễ đến khó)</title>
+<title>Food: nghe viết, đọc hiểu, nói</title>
 <style>
   :root { --bg:#f6f7f2; --card:#fff; --ink:#1f2a1f; --mut:#5d695f; --g:#2e7d32; --lg:#e8f3e8; --o:#b26a00; --lo:#fff1dc; --r:#c62828; --lr:#fdeaea; --line:#dfe5da; }
   @media (prefers-color-scheme: dark) { :root { --bg:#14201a; --card:#1d2d24; --ink:#eaf2ea; --mut:#a9b8ac; --g:#7bd17f; --lg:#24382b; --o:#f0b45a; --lo:#3a2f1c; --r:#ff8a80; --lr:#3b2323; --line:#33463a; } }
@@ -11,264 +11,283 @@
   body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--ink); line-height:1.5; }
   .wrap { max-width:720px; margin:0 auto; padding:14px 14px 80px; }
   h1 { font-size:1.35rem; margin:8px 0 2px; }
-  .sub { color:var(--mut); font-size:.92rem; margin:0 0 8px; }
-  .progress { position:sticky; top:0; background:var(--bg); padding:8px 0; z-index:5; }
+  .sub, .vi { color:var(--mut); font-size:.9rem; }
+  .bar { position:sticky; top:0; background:var(--bg); padding:8px 0; z-index:5; }
   .pbar { height:10px; background:var(--line); border-radius:99px; overflow:hidden; }
   .pbar i { display:block; height:100%; width:0; background:var(--g); transition:width .3s; }
-  .ptxt { font-size:.85rem; color:var(--mut); margin-top:4px; }
-  .chips { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; }
-  .chip { border:2px solid var(--line); background:var(--card); border-radius:99px; padding:6px 12px; font-size:.9rem; cursor:pointer; color:var(--ink); font:inherit; font-size:.9rem; }
+  .ptxt { font-size:.85rem; color:var(--mut); margin:4px 0; }
+  .chips { display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+  .chip { border:2px solid var(--line); background:var(--card); color:var(--ink); border-radius:99px; padding:5px 12px; font:inherit; font-size:.88rem; cursor:pointer; }
   .chip.on { border-color:var(--g); background:var(--lg); font-weight:700; }
-  .chip.done::after { content:" ✅"; }
-  .chip.lock { opacity:.55; }
   .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; margin-top:12px; }
-  h2 { font-size:1.15rem; margin:0 0 8px; }
-  h3 { font-size:1rem; margin:14px 0 6px; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
-  .fc { border:1px solid var(--line); border-radius:12px; padding:10px; background:var(--card); }
-  .fc .em { font-size:2rem; }
-  .fc b { font-size:1.05rem; }
-  .ipa { color:var(--mut); font-size:.88rem; }
-  .vi { font-size:.92rem; }
-  .ex { font-size:.85rem; color:var(--mut); margin-top:2px; }
+  h2 { font-size:1.12rem; margin:0 0 6px; }
+  input[type=text], textarea { width:100%; font:inherit; padding:10px 12px; border:2px solid var(--line); border-radius:10px; background:var(--card); color:var(--ink); }
+  textarea { min-height:70px; }
+  input:focus, textarea:focus { outline:none; border-color:var(--g); }
   button { font:inherit; cursor:pointer; }
-  .say { border:0; background:var(--lg); border-radius:8px; padding:2px 8px; margin-left:4px; }
   .primary { background:var(--g); color:#fff; border:0; padding:11px 20px; border-radius:12px; font-weight:700; }
-  .primary:disabled { opacity:.4; cursor:not-allowed; }
+  .primary:disabled { opacity:.45; cursor:default; }
   .ghost { background:transparent; border:2px solid var(--line); color:var(--ink); padding:9px 16px; border-radius:12px; }
-  table { width:100%; border-collapse:collapse; font-size:.93rem; }
-  th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
-  th { background:var(--lg); }
-  .tip { background:var(--lo); border-radius:10px; padding:10px 12px; margin:10px 0; font-size:.92rem; }
-  .opt { display:block; width:100%; text-align:left; padding:11px 13px; margin-top:8px; border:2px solid var(--line); border-radius:12px; background:var(--card); color:var(--ink); }
-  .opt.ok { border-color:var(--g); background:var(--lg); }
-  .opt.bad { border-color:var(--r); background:var(--lr); }
-  .qn { font-weight:700; margin-top:4px; }
-  .fb { margin-top:8px; font-size:.92rem; padding:8px 10px; border-radius:10px; }
-  .fb.ok { background:var(--lg); } .fb.bad { background:var(--lr); }
   .row { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; flex-wrap:wrap; }
-  .hidden, .modal.hidden { display:none !important; }
-  label.tick { display:flex; gap:8px; align-items:flex-start; margin-top:12px; font-size:.95rem; }
+  .play { display:flex; gap:10px; justify-content:center; margin:14px 0; }
+  .play button { font-size:1.05rem; }
+  .big { font-size:2.2rem; text-align:center; }
+  .fb { margin-top:10px; padding:10px 12px; border-radius:10px; font-size:.95rem; }
+  .fb.ok { background:var(--lg); color:var(--g); } .fb.no { background:var(--lr); color:var(--r); } .fb.hint { background:var(--lo); color:var(--o); }
+  .tip { background:var(--lo); border-radius:10px; padding:10px 12px; margin:10px 0; font-size:.92rem; }
+  .passage { font-size:1.05rem; line-height:1.7; }
+  .opt { display:block; width:100%; text-align:left; margin:6px 0; padding:10px 12px; border:2px solid var(--line); background:var(--card); color:var(--ink); border-radius:10px; }
+  .opt.sel { border-color:var(--g); background:var(--lg); }
+  .opt.good { border-color:var(--g); background:var(--lg); } .opt.bad { border-color:var(--r); background:var(--lr); }
+  .rec { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:10px; }
+  .rec.live button.r { background:var(--r); color:#fff; border-color:var(--r); }
+  .done { color:var(--g); font-weight:700; }
   .modal { position:fixed; inset:0; background:rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center; padding:20px; z-index:20; }
   .modal .box { background:var(--card); border-radius:14px; padding:18px; max-width:420px; }
-  .score { font-size:2rem; font-weight:800; color:var(--g); }
+  .hidden, .modal.hidden { display:none !important; }
+  ul.ph { padding-left:20px; margin:6px 0; font-size:.92rem; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Food: từ vựng, hỏi vị và nói vị</h1>
-  <p class="sub">3 mức từ dễ đến khó · học xong mới mở bài tập · làm đạt từ 70% mới mở mức tiếp theo</p>
-  <div class="progress"><div class="pbar"><i id="pbar"></i></div><div class="ptxt" id="ptxt"></div></div>
-  <div class="chips" id="chips"></div>
-  <div id="stage"></div>
+  <h1>Food: nghe viết, đọc hiểu, nói</h1>
+  <p class="sub">3 phần: ① Nghe và viết lại từ · ② Bài đọc về đồ ăn · ③ Nói: trả lời 3 câu hỏi. Làm xong phần trước mới mở phần sau.</p>
+  <div class="card">
+    <label class="vi">Tên em (bắt buộc, để cô biết bài của em)</label>
+    <input type="text" id="name" placeholder="Nguyễn Văn A">
+  </div>
+  <div class="bar"><div class="pbar"><i id="pbar"></i></div><div class="ptxt" id="ptxt"></div><div class="chips" id="chips"></div></div>
+  <div id="main"></div>
 </div>
 <div class="modal hidden" id="modal"><div class="box"><p id="mtxt"></p><div class="row"><span></span><button class="primary" id="mok">Đã hiểu</button></div></div></div>
 
 <script>
-/* ====== DỮ LIỆU (câu và ví dụ do Claude soạn; từ khớp unit 24 đến 26 của Oxford Word Skills Basic) ====== */
-var KEY = "food-taste-learn-v1";
-var FOODS = [
- ["apple","🍎","/ˈæpl/","quả táo"],["banana","🍌","/bəˈnɑːnə/","chuối"],["lemon","🍋","/ˈlemən/","chanh vàng"],["strawberry","🍓","/ˈstrɔːbəri/","dâu tây"],
- ["carrot","🥕","/ˈkærət/","cà rốt"],["tomato","🍅","/təˈmɑːtəʊ/","cà chua"],["potato","🥔","/pəˈteɪtəʊ/","khoai tây"],["onion","🧅","/ˈʌnjən/","hành tây"],
- ["cheese","🧀","/tʃiːz/","phô mai"],["milk","🥛","/mɪlk/","sữa"],["bread","🍞","/bred/","bánh mì"],["egg","🥚","/eɡ/","trứng"],
- ["rice","🍚","/raɪs/","gạo, cơm"],["chicken","🍗","/ˈtʃɪkɪn/","gà"],["fish","🐟","/fɪʃ/","cá"],["chocolate","🍫","/ˈtʃɒklət/","sô cô la"]
-];
-var TASTE1 = [
- ["sweet","🍬","/swiːt/","ngọt","Strawberries are very sweet."],["sour","🍋","/ˈsaʊə(r)/","chua","Lemons are sour."],["salty","🧂","/ˈsɔːlti/","mặn","Olives are salty."],
- ["bitter","☕","/ˈbɪtə(r)/","đắng","Black coffee is bitter."],["spicy","🌶️","/ˈspaɪsi/","cay","Chillies make your mouth hot."],["fresh","🥬","/freʃ/","tươi","I eat a lot of fresh fruit."]
-];
-var TASTE2 = [
- ["What does it taste like?","/wɒt dʌz ɪt ˈteɪst laɪk/","Nó có vị như thế nào?","It tastes like chicken."],
- ["How does it taste?","/haʊ dʌz ɪt ˈteɪst/","Vị của nó thế nào?","It tastes sweet."],
- ["Is it sweet or sour?","/ɪz ɪt ˈswiːt ɔː ˈsaʊə/","Nó ngọt hay chua?","It's sour."],
- ["Do you like spicy food?","/də ju ˈlaɪk ˈspaɪsi fuːd/","Bạn có thích đồ cay không?","Yes, I do. / No, I don't."],
- ["Is it too salty for you?","/ɪz ɪt tuː ˈsɔːlti fə ju/","Nó có mặn quá với bạn không?","A bit, yes."],
- ["What's your favourite food? Why?","/wɒts jɔː ˈfeɪvərɪt fuːd waɪ/","Món bạn thích nhất là gì? Vì sao?","Pizza, because it's cheesy."]
-];
-var TASTE3 = [
- ["crispy","/ˈkrɪspi/","giòn (mỏng, khô)","The fried chicken is crispy."],["crunchy","/ˈkrʌntʃi/","giòn rộp, nhai kêu","Carrots are crunchy."],
- ["creamy","/ˈkriːmi/","béo mịn như kem","The soup is creamy."],["chewy","/ˈtʃuːi/","dai","The meat is a bit chewy."],
- ["tender","/ˈtendə(r)/","mềm","The beef is tender."],["juicy","/ˈdʒuːsi/","mọng nước","The orange is juicy."],
- ["greasy","/ˈɡriːsi/","nhiều dầu mỡ","The chips are greasy."],["bland","/blænd/","nhạt nhẽo","The soup is bland. Add some salt."],
- ["rich","/rɪtʃ/","đậm, béo ngậy","The chocolate cake is very rich."],["sticky","/ˈstɪki/","dính","Sticky rice is soft and sticky."]
-];
-var STEPS = [
- {id:"s1", t:"Mức 1 · Dễ", note:"Nhận ra đồ ăn và 6 vị cơ bản"},
- {id:"s2", t:"Mức 2 · Vừa", note:"Hỏi vị và nói vị bằng câu"},
- {id:"s3", t:"Mức 3 · Khó", note:"Kết cấu món ăn và nói ý kiến có lý do"},
- {id:"s4", t:"Nói to", note:"Nói thành câu trả lời hoàn chỉnh"}
-];
-/* câu hỏi: q, o (đáp án), a (chỉ số đúng), x (giải thích) */
-var Q1 = [
- {q:"🍎 là gì?",o:["apple","pear","peach"],a:0,x:"apple = quả táo."},
- {q:"🥛 là gì?",o:["milk","butter","cheese"],a:0,x:"milk = sữa."},
- {q:"🍞 là gì?",o:["rice","bread","cake"],a:1,x:"bread = bánh mì."},
- {q:"🥕 là gì?",o:["onion","carrot","potato"],a:1,x:"carrot = cà rốt."},
- {q:"Chanh có vị gì?",o:["sweet","sour","salty"],a:1,x:"Lemons are sour: chanh chua."},
- {q:"Sô cô la đen thường thế nào?",o:["bitter","fresh","salty"],a:0,x:"Dark chocolate and black coffee are bitter: đắng."},
- {q:"Ớt có vị gì?",o:["spicy","sweet","sour"],a:0,x:"Chilli is spicy: cay."},
- {q:"Đường có vị gì?",o:["sour","bitter","sweet"],a:2,x:"Sugar is sweet: ngọt."},
- {q:"Nghĩa của fresh là gì?",o:["cũ","tươi","mặn"],a:1,x:"fresh = tươi, không cũ, không đóng hộp."},
- {q:"Chọn từ khác loại.",o:["chicken","fish","milk"],a:2,x:"chicken, fish là thịt, cá. milk là sữa."}
-];
-var Q2 = [
- {q:"The soup ___ salty.",o:["tastes","tastes of","tastes like of"],a:0,x:"taste + tính từ: tastes salty."},
- {q:"This juice tastes ___ orange.",o:["of","at","in"],a:0,x:"taste of + danh từ: tastes of orange."},
- {q:"The fish tastes ___ chicken.",o:["of like","like","to"],a:1,x:"taste like + danh từ: tastes like chicken."},
- {q:"Chọn câu hỏi đúng.",o:["What does it taste like?","What it tastes like?","How does it taste like?"],a:0,x:"Dùng does vì chủ ngữ là it, và taste là động từ nguyên mẫu."},
- {q:"Trả lời: Is it sweet or sour?",o:["Yes, it is.","It's sour.","It tastes of sour."],a:1,x:"Câu hỏi lựa chọn thì chọn một vế: It's sour."},
- {q:"The tea is ___ sweet. I don't like it.",o:["too","a bit","not very"],a:0,x:"too = quá (không tốt). I don't like it vì nó quá ngọt."},
- {q:"The soup is ___ salty, but it's OK.",o:["too","a bit","very much"],a:1,x:"a bit = hơi."},
- {q:"Chọn câu đúng.",o:["I like spicy food.","I like spicy foods very.","I am like spicy food."],a:0,x:"like + danh từ: I like spicy food."},
- {q:"Mùi vị của sô cô la: It tastes ___.",o:["sweetly","sweet","of sweet"],a:1,x:"taste + tính từ, không dùng trạng từ sweetly."},
- {q:"Do you like spicy food? (không thích)",o:["No, I don't.","No, I'm not.","No, I don't like."],a:0,x:"Do you ...? → No, I don't."}
-];
-var Q3 = [
- {q:"Gà rán ngoài vỏ mỏng và giòn: The fried chicken is ___.",o:["crispy","bland","sticky"],a:0,x:"crispy = giòn mỏng, khô."},
- {q:"Cà rốt sống nhai nghe kêu: Carrots are ___.",o:["greasy","crunchy","creamy"],a:1,x:"crunchy = giòn rộp, nhai kêu."},
- {q:"Món ăn nhiều dầu mỡ: The chips are ___.",o:["greasy","tender","juicy"],a:0,x:"greasy = nhiều dầu mỡ."},
- {q:"Súp thiếu muối, ăn nhạt: The soup is ___.",o:["rich","bland","spicy"],a:1,x:"bland = nhạt nhẽo."},
- {q:"Thịt bò nấu lâu, rất mềm: The beef is ___.",o:["tender","chewy","sticky"],a:0,x:"tender = mềm."},
- {q:"Chọn từ khác loại.",o:["crispy","crunchy","creamy"],a:2,x:"crispy, crunchy nói về độ giòn. creamy nói về độ béo mịn."},
- {q:"It tastes ___ if you add a little lemon.",o:["better","more good","gooder"],a:0,x:"good → better (so sánh hơn bất quy tắc)."},
- {q:"Chọn câu đúng.",o:["It's a bit too salty for me.","It's a bit too much salty for me.","It's too much a bit salty."],a:0,x:"a bit too + tính từ = hơi quá."},
- {q:"Chọn câu nói ý kiến có lý do.",o:["I don't like it because it's too bitter.","I don't like it because bitter.","I don't like it too bitter."],a:0,x:"because + mệnh đề đầy đủ (it's too bitter)."},
- {q:"Nghĩa của sweet and sour là gì?",o:["chua ngọt","ngọt mặn","đắng và cay"],a:0,x:"sweet and sour = chua ngọt. Ví dụ: sweet and sour fish."},
- {q:"Bánh kem rất béo ngậy: The cake is very ___.",o:["rich","fresh","bland"],a:0,x:"rich = đậm, béo ngậy (nhiều bơ, trứng, đường)."},
- {q:"Tìm lỗi: The ice cream tastes sweetly.",o:["tastes sweet","tastes of sweet","taste sweetly"],a:0,x:"Sau taste dùng tính từ: tastes sweet."}
-];
-var SPEAK = [
- "What does your favourite food taste like? (Dùng: It tastes... / It's a bit... / It's not too...)",
- "Do you like spicy food? Why or why not? (Dùng: I like / I don't like ... because it's ...)",
- "Describe a dish from your family: how does it look, smell and taste? (Dùng: crispy, tender, creamy, juicy...)"
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHIIHnQWgc7rSRzIV8EeX0Y7PobNi8_Kbl9ybE47lxbTn_Z5ecoRcDctajXzLGYIk/exec";
+var LESSON = "Food - Nghe viet, Doc, Noi";
+var KEY = "food-listen-read-speak-v1";
+
+/* ① Nghe và viết: từ dễ đến khó */
+var DICT = [
+ {w:"apple",ipa:"/ˈæpl/",vi:"quả táo"},
+ {w:"milk",ipa:"/mɪlk/",vi:"sữa"},
+ {w:"bread",ipa:"/bred/",vi:"bánh mì"},
+ {w:"sweet",ipa:"/swiːt/",vi:"ngọt"},
+ {w:"chicken",ipa:"/ˈtʃɪkɪn/",vi:"thịt gà"},
+ {w:"sour",ipa:"/ˈsaʊə(r)/",vi:"chua"},
+ {w:"chocolate",ipa:"/ˈtʃɒklət/",vi:"sô cô la"},
+ {w:"spicy",ipa:"/ˈspaɪsi/",vi:"cay"},
+ {w:"vegetables",ipa:"/ˈvedʒtəblz/",vi:"rau củ"},
+ {w:"crunchy",ipa:"/ˈkrʌntʃi/",vi:"giòn"},
+ {w:"delicious",ipa:"/dɪˈlɪʃəs/",vi:"ngon tuyệt"},
+ {w:"ingredients",ipa:"/ɪnˈɡriːdiənts/",vi:"nguyên liệu"}
 ];
 
-/* ====== TRẠNG THÁI ====== */
-var S = { cur:"s1", done:{}, read:{}, quiz:{} };
-function load(){ try { var j = JSON.parse(localStorage.getItem(KEY)||"null"); if (j) S = j; } catch(e){} }
-function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+/* ② Bài đọc */
+var PASSAGE_TITLE = "Sunday Lunch at My Grandmother's House";
+var PASSAGE = [
+ "Every Sunday, my family has lunch at my grandmother's house. My grandmother loves cooking, and she always uses fresh ingredients.",
+ "Last Sunday, she made chicken soup with carrots and onions. It was hot and a little salty, and it smelled delicious. My mum brought a big salad with tomatoes and cucumbers. It was crunchy and fresh.",
+ "For dessert, we had strawberries with sugar. They were very sweet, but my dad thought they were a little sour. I don't have a sweet tooth, so I only ate three.",
+ "After lunch, my grandmother gave us green tea. It was bitter, but it was good for our stomachs. I love Sunday lunch because the food is healthy and the whole family is together."
+];
+var GLOSS = [["fresh","tươi"],["salty","mặn"],["crunchy","giòn"],["sweet tooth","người thích đồ ngọt"],["bitter","đắng"],["healthy","tốt cho sức khỏe"]];
+var RQ = [
+ {q:"Where does the family have lunch every Sunday?", o:["At a restaurant","At the grandmother's house","At school"], a:1, x:"Câu đầu: at my grandmother's house."},
+ {q:"What was in the soup?", o:["Fish and rice","Chicken, carrots and onions","Beef and potatoes"], a:1, x:"Chicken soup with carrots and onions."},
+ {q:"How was the salad?", o:["Crunchy and fresh","Hot and spicy","Sweet and sour"], a:0, x:"It was crunchy and fresh."},
+ {q:"Why did the writer eat only three strawberries?", o:["They were too sour","There were no more","The writer doesn't have a sweet tooth"], a:2, x:"I don't have a sweet tooth, so I only ate three."},
+ {q:"How was the green tea?", o:["Bitter but good for the stomach","Very sweet","Too hot to drink"], a:0, x:"It was bitter, but it was good for our stomachs."},
+ {q:"Why does the writer love Sunday lunch?", o:["The food is cheap","The food is healthy and the family is together","There is a lot of dessert"], a:1, x:"Because the food is healthy and the whole family is together."}
+];
+var PASS_READ = 4; /* đúng ít nhất 4/6 */
+
+/* ③ Nói */
+var SPEAK = [
+ {q:"Do you like cooking?", vi:"Em có thích nấu ăn không?",
+  ph:["Yes, I do. I like cooking because ...","No, I don't. I'd rather eat than cook.","I can cook simple dishes like ... (fried rice, noodles, eggs).","I usually cook with my mum / by myself."]},
+ {q:"Do you have a sweet tooth?", vi:"Em có thích đồ ngọt không?",
+  ph:["Yes, I do. I love ... (cake, ice cream, chocolate).","No, I don't. I prefer salty / spicy food.","Sweet things are too sweet for me.","I eat sweets once or twice a week."]},
+ {q:"Do you have a healthy diet?", vi:"Chế độ ăn của em có tốt cho sức khỏe không?",
+  ph:["Yes, I think so. I eat a lot of fruit and vegetables.","Not really. I eat too much fast food / sugar.","I try to drink more water and eat less sugar.","I always have breakfast. It's good for me."]}
+];
+
+var S = {name:"", step:0, di:0, dfirst:[], dtry:0, rans:[], rscore:-1, sent:[], txt:[], tried:0};
+var BLOBS = [], RECS = [], STREAM = null;
 function $(id){ return document.getElementById(id); }
-function say(t){ try { var u = new SpeechSynthesisUtterance(t); u.lang = "en-GB"; u.rate = .9; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch(e){} }
+function load(){ try { var j = JSON.parse(localStorage.getItem(KEY)||"null"); if (j) for (var k in j) S[k] = j[k]; } catch(e){} }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
 function alertBox(t){ $("mtxt").textContent = t; $("modal").classList.remove("hidden"); }
 $("mok").onclick = function(){ $("modal").classList.add("hidden"); };
-function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
-function isUnlocked(i){ return i===0 || S.done[STEPS[i-1].id]; }
-function pct(){ var n=0; STEPS.forEach(function(s){ if(S.done[s.id]) n++; }); return Math.round(n/STEPS.length*100); }
+function say(t, slow){ try { var u = new SpeechSynthesisUtterance(t); u.lang = "en-GB"; u.rate = slow ? .55 : .9; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch(e){} }
 
-function drawChips(){
+var STEPS = ["① Nghe và viết","② Bài đọc","③ Nói"];
+function dictDone(){ return S.dfirst.length >= DICT.length; }
+function readDone(){ return S.rscore >= PASS_READ; }
+function speakDone(){ for (var i=0;i<SPEAK.length;i++) if (!S.sent[i]) return false; return true; }
+function unlocked(i){ return i===0 || (i===1 && dictDone()) || (i===2 && dictDone() && readDone()); }
+function pct(){
+  var a = Math.min(S.dfirst.length/DICT.length,1), b = readDone()?1:0, c = 0;
+  for (var i=0;i<SPEAK.length;i++) if (S.sent[i]) c++;
+  return Math.round((a+b+c/SPEAK.length)/3*100);
+}
+function head(){
+  $("pbar").style.width = pct()+"%";
+  $("ptxt").textContent = "Hoàn thành " + pct() + "%";
   var c = $("chips"); c.innerHTML = "";
-  STEPS.forEach(function(s,i){
-    var b = document.createElement("button");
-    b.className = "chip" + (S.cur===s.id?" on":"") + (S.done[s.id]?" done":"") + (isUnlocked(i)?"":" lock");
-    b.textContent = (isUnlocked(i)?"":"🔒 ") + s.t;
+  STEPS.forEach(function(t,i){
+    var b = document.createElement("button"); b.className = "chip" + (S.step===i?" on":"");
+    var done = i===0?dictDone():i===1?readDone():speakDone();
+    b.textContent = (done?"✅ ":(unlocked(i)?"":"🔒 ")) + t;
     b.onclick = function(){
-      if (!isUnlocked(i)) { alertBox("Hãy hoàn thành " + STEPS[i-1].t + " (đạt từ 70% ở phần bài tập) trước nhé."); return; }
-      S.cur = s.id; save(); render();
+      if (!unlocked(i)) { alertBox(i===1 ? "Hãy hoàn thành phần ① Nghe và viết trước nhé." : "Hãy hoàn thành phần ② Bài đọc (đúng ít nhất "+PASS_READ+"/"+RQ.length+") trước nhé."); return; }
+      S.step = i; save(); render();
     };
     c.appendChild(b);
   });
-  $("pbar").style.width = pct()+"%";
-  $("ptxt").textContent = "Hoàn thành " + pct() + "%";
+}
+function needName(){
+  if (!($("name").value||"").trim()) { alertBox("Em hãy nhập tên trước khi làm bài."); $("name").focus(); return true; }
+  return false;
+}
+function render(){ head(); [renderDict, renderRead, renderSpeak][S.step](); }
+
+/* ===== ① ===== */
+function renderDict(){
+  var m = $("main");
+  if (dictDone()) {
+    var ok = S.dfirst.filter(Boolean).length;
+    m.innerHTML = '<div class="card"><h2>① Nghe và viết: xong rồi!</h2><p>Em viết đúng ngay lần đầu <b>'+ok+'/'+DICT.length+'</b> từ.</p><div class="row"><button class="ghost" id="again">Làm lại từ đầu</button><button class="primary" id="go">Sang phần ② ▶</button></div></div>';
+    $("go").onclick = function(){ S.step = 1; save(); render(); };
+    $("again").onclick = function(){ S.di = 0; S.dfirst = []; S.dtry = 0; save(); render(); };
+    return;
+  }
+  var d = DICT[S.di];
+  m.innerHTML = '<div class="card"><h2>① Nghe và viết lại từ ('+(S.di+1)+'/'+DICT.length+')</h2><p class="vi">Bấm nghe, rồi gõ từ em nghe được. Từ dễ đến khó dần.</p>'+
+    '<div class="play"><button class="primary" id="p1">🔊 Nghe</button><button class="ghost" id="p2">🐢 Nghe chậm</button></div>'+
+    '<input type="text" id="ans" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Gõ từ em nghe được">'+
+    '<div id="fb"></div><div class="row"><span class="vi">Em có thể nghe lại bao nhiêu lần cũng được</span><button class="primary" id="chk">Kiểm tra</button></div></div>';
+  $("p1").onclick = function(){ say(d.w); }; $("p2").onclick = function(){ say(d.w, true); };
+  var a = $("ans"); a.focus();
+  function check(){
+    var v = a.value.trim().toLowerCase(), fb = $("fb");
+    if (!v) return;
+    if (v === d.w) {
+      if (S.dfirst.length === S.di) S.dfirst.push(S.dtry === 0);
+      S.dtry = 0; save();
+      fb.className = "fb ok"; fb.innerHTML = "✅ Đúng! <b>"+d.w+"</b> "+d.ipa+" = "+d.vi;
+      $("chk").textContent = S.di === DICT.length-1 ? "Xem kết quả" : "Từ tiếp ▶";
+      $("chk").onclick = function(){ S.di++; save(); render(); };
+      a.disabled = true; say(d.w);
+    } else {
+      S.dtry++; save();
+      fb.className = "fb no";
+      var hint = S.dtry >= 2 ? '<br>Gợi ý: từ này có <b>'+d.w.length+'</b> chữ, bắt đầu bằng <b>'+d.w[0]+'</b>.' : "";
+      if (S.dtry >= 4) hint += '<br>Đáp án: <b>'+d.w+'</b> '+d.ipa+' ('+d.vi+'). Em gõ lại để nhớ nhé.';
+      fb.innerHTML = "Chưa đúng, em nghe lại nhé." + hint;
+      a.select();
+    }
+  }
+  $("chk").onclick = check;
+  a.onkeydown = function(e){ if (e.key === "Enter") { if (a.disabled) $("chk").click(); else check(); } };
 }
 
-function foodCard(w){ return '<div class="fc"><div class="em">'+w[1]+'</div><b>'+w[0]+'</b><button class="say" data-s="'+w[0]+'">🔊</button><div class="ipa">'+w[2]+'</div><div class="vi">'+w[3]+'</div>'+(w[4]?'<div class="ex">'+w[4]+'</div>':'')+'</div>'; }
-
-function learnHTML(id){
-  if (id==="s1") {
-    return '<h2>Mức 1 · Học từ</h2><h3>16 món ăn quen thuộc</h3><div class="grid">'+FOODS.map(foodCard).join("")+'</div><h3>6 vị cơ bản</h3><div class="grid">'+TASTE1.map(foodCard).join("")+'</div><div class="tip">Hỏi vị đơn giản: <b>Is it sweet or sour?</b> · Trả lời: <b>It\'s sour.</b></div>';
-  }
-  if (id==="s2") {
-    var rows = TASTE2.map(function(r){ return '<tr><td><b>'+r[0]+'</b><button class="say" data-s="'+r[0].replace(/"/g,'')+'">🔊</button><div class="ipa">'+r[1]+'</div></td><td>'+r[2]+'</td><td>'+r[3]+'</td></tr>'; }).join("");
-    return '<h2>Mức 2 · Hỏi và nói vị</h2><table><tr><th>Câu hỏi</th><th>Nghĩa</th><th>Trả lời mẫu</th></tr>'+rows+'</table>'+
-      '<h3>Ba cách nói vị</h3><table><tr><th>Mẫu</th><th>Ví dụ</th></tr><tr><td>taste + tính từ</td><td>It tastes sweet. The soup tastes salty.</td></tr><tr><td>taste of + danh từ (vị của nguyên liệu)</td><td>This juice tastes of orange and lemon.</td></tr><tr><td>taste like + danh từ (giống như)</td><td>It tastes like chicken.</td></tr></table>'+
-      '<h3>Mức độ</h3><table><tr><th>Từ</th><th>Nghĩa</th><th>Ví dụ</th></tr><tr><td>very, really</td><td>rất</td><td>It\'s very sweet.</td></tr><tr><td>a bit</td><td>hơi</td><td>It\'s a bit salty.</td></tr><tr><td>too</td><td>quá (không tốt)</td><td>It\'s too spicy for me.</td></tr><tr><td>not very</td><td>không … lắm</td><td>It\'s not very sweet.</td></tr></table>';
-  }
-  if (id==="s3") {
-    var rs = TASTE3.map(function(r){ return '<tr><td><b>'+r[0]+'</b><button class="say" data-s="'+r[0]+'">🔊</button><div class="ipa">'+r[1]+'</div></td><td>'+r[2]+'</td><td>'+r[3]+'</td></tr>'; }).join("");
-    return '<h2>Mức 3 · Kết cấu món ăn và ý kiến</h2><table><tr><th>Từ</th><th>Nghĩa</th><th>Ví dụ</th></tr>'+rs+'</table>'+
-      '<h3>Cụm và cấu trúc khó hơn</h3><table><tr><th>Mẫu</th><th>Ví dụ</th></tr>'+
-      '<tr><td>sweet and sour (chua ngọt)</td><td>I love sweet and sour fish.</td></tr>'+
-      '<tr><td>a bit too + tính từ</td><td>It\'s a bit too salty for me.</td></tr>'+
-      '<tr><td>tính từ so sánh hơn</td><td>This is sweeter than that. It tastes better with lemon.</td></tr>'+
-      '<tr><td>It tastes better if / when ...</td><td>It tastes better when it\'s hot.</td></tr>'+
-      '<tr><td>ý kiến + because ...</td><td>I like it because it\'s crispy. I don\'t like it because it\'s too bitter.</td></tr></table>'+
-      '<div class="tip">Tránh dịch từng chữ: không nói "It tastes sweetly". Sau taste dùng <b>tính từ</b>.</div>';
-  }
-  return '';
-}
-
-function render(){
-  drawChips();
-  var st = $("stage"), id = S.cur, step = STEPS.filter(function(s){return s.id===id;})[0];
-  if (id==="s4") return renderSpeak();
-  var html = '<div class="card">'+learnHTML(id)+
-    '<label class="tick"><input type="checkbox" id="rd"'+(S.read[id]?' checked':'')+'> Em đã đọc kỹ phần này</label>'+
-    '<div class="row"><span></span><button class="primary" id="toQ">Làm bài tập</button></div></div><div id="quiz"></div>';
-  st.innerHTML = html;
-  bindSay(st);
-  $("rd").onchange = function(){ S.read[id]=this.checked; save(); };
-  $("toQ").onclick = function(){
-    if (!S.read[id]) { alertBox("Hãy đọc kỹ phần từ vựng và tick \"Em đã đọc kỹ\" trước khi làm bài tập."); return; }
-    startQuiz(id);
-  };
-  if (S.quiz[id] && S.quiz[id].best!=null) $("quiz").innerHTML = '<div class="card">Điểm cao nhất của em: <b>'+S.quiz[id].best+'%</b>'+(S.done[id]?' ✅':'')+'</div>';
-}
-
-function bindSay(root){ Array.prototype.forEach.call(root.querySelectorAll("[data-s]"), function(b){ b.onclick = function(){ say(b.getAttribute("data-s")); }; }); }
-
-function startQuiz(id){
-  var bank = id==="s1"?Q1:id==="s2"?Q2:Q3;
-  var items = bank.map(function(q){ var o = shuffle(q.o.map(function(t,i){return {t:t,c:i===q.a};})); return {q:q.q,o:o,x:q.x}; });
-  var i = 0, right = 0, box = $("quiz");
-  function show(){
-    var it = items[i];
-    var h = '<div class="card"><div class="ptxt">Câu '+(i+1)+'/'+items.length+'</div><div class="qn">'+it.q+'</div>';
-    it.o.forEach(function(o,k){ h += '<button class="opt" data-k="'+k+'">'+o.t+'</button>'; });
-    h += '<div id="fb"></div><div class="row"><span></span><button class="primary hidden" id="nx">'+(i===items.length-1?'Xem điểm':'Câu tiếp')+'</button></div></div>';
-    box.innerHTML = h; box.scrollIntoView({behavior:"smooth", block:"start"});
-    Array.prototype.forEach.call(box.querySelectorAll(".opt"), function(b){
-      b.onclick = function(){
-        if (b.disabled) return;
-        var k = +b.getAttribute("data-k"), ok = it.o[k].c;
-        Array.prototype.forEach.call(box.querySelectorAll(".opt"), function(x,j){ x.disabled = true; if (it.o[j].c) x.classList.add("ok"); });
-        if (!ok) b.classList.add("bad"); else right++;
-        $("fb").innerHTML = '<div class="fb '+(ok?'ok':'bad')+'">'+(ok?'Đúng! ':'Chưa đúng. ')+it.x+'</div>';
-        $("nx").classList.remove("hidden");
-      };
-    });
-    $("nx").onclick = function(){ i++; if (i<items.length) show(); else finish(); };
-  }
-  function finish(){
-    var p = Math.round(right/items.length*100);
-    var q = S.quiz[id] || {}; q.best = Math.max(q.best||0, p); S.quiz[id] = q;
-    var pass = p >= 70; if (pass) S.done[id] = true; save(); drawChips();
-    var nextIdx = STEPS.map(function(s){return s.id;}).indexOf(id)+1;
-    box.innerHTML = '<div class="card"><div class="score">'+right+'/'+items.length+' ('+p+'%)</div><p>'+(pass?'Đạt yêu cầu. Mức tiếp theo đã mở.':'Chưa đạt 70%. Đọc lại bài và làm lại nhé.')+'</p><div class="row"><button class="ghost" id="again">Làm lại</button>'+(pass?'<button class="primary" id="go">Sang phần tiếp theo</button>':'<span></span>')+'</div></div>';
-    $("again").onclick = function(){ startQuiz(id); };
-    if (pass) $("go").onclick = function(){ S.cur = STEPS[nextIdx].id; save(); render(); window.scrollTo(0,0); };
-  }
-  show();
-}
-
-function renderSpeak(){
-  var st = $("stage");
-  var h = '<div class="card"><h2>Nói to: trả lời thành câu hoàn chỉnh</h2><p>Mỗi câu hỏi, em nói to 3 đến 4 câu. Bấm 🔊 để nghe câu hỏi, nói xong thì tick.</p>';
-  SPEAK.forEach(function(t,i){
-    var en = t.split(" (")[0];
-    h += '<div class="tip"><b>'+(i+1)+'.</b> '+t+' <button class="say" data-s="'+en.replace(/"/g,'')+'">🔊</button><label class="tick"><input type="checkbox" class="sp" data-i="'+i+'"'+((S.read["sp"+i])?' checked':'')+'> Em đã nói xong</label></div>';
+/* ===== ② ===== */
+function renderRead(){
+  var m = $("main"), h = '<div class="card"><h2>② Bài đọc: '+esc(PASSAGE_TITLE)+'</h2><div class="passage">';
+  PASSAGE.forEach(function(p){ h += "<p>"+esc(p)+"</p>"; });
+  h += '</div><div class="row"><button class="ghost" id="rd">🔊 Nghe cả bài</button></div><div class="tip"><b>Từ cần biết:</b> ' + GLOSS.map(function(g){ return "<b>"+g[0]+"</b> = "+g[1]; }).join(" · ") + '</div></div>';
+  h += '<div class="card"><h2>Trả lời câu hỏi (đúng ít nhất '+PASS_READ+'/'+RQ.length+' để sang phần ③)</h2><div id="qs"></div><div class="row"><span id="sc" class="vi"></span><button class="primary" id="sub">Nộp phần đọc</button></div></div>';
+  m.innerHTML = h;
+  $("rd").onclick = function(){ say(PASSAGE.join(" ")); };
+  var qs = $("qs"); var pick = {};
+  RQ.forEach(function(q,i){
+    var d = document.createElement("div"); d.style.marginTop = "12px";
+    d.innerHTML = "<b>"+(i+1)+". "+esc(q.q)+"</b>";
+    q.o.forEach(function(o,j){ var b = document.createElement("button"); b.className = "opt"; b.textContent = o; b.onclick = function(){ if (b.disabled) return; pick[i] = j; Array.prototype.forEach.call(d.querySelectorAll(".opt"), function(x,k){ x.classList.toggle("sel", k===j); }); }; d.appendChild(b); });
+    var x = document.createElement("div"); x.className = "vi"; x.id = "x"+i; d.appendChild(x);
+    qs.appendChild(d);
   });
-  h += '<div class="row"><span></span><button class="primary" id="fin">Hoàn thành bài học</button></div></div>';
-  st.innerHTML = h; bindSay(st);
-  Array.prototype.forEach.call(st.querySelectorAll(".sp"), function(c){ c.onchange = function(){ S.read["sp"+c.getAttribute("data-i")] = c.checked; save(); }; });
-  $("fin").onclick = function(){
-    var miss = SPEAK.filter(function(t,i){ return !S.read["sp"+i]; }).length;
-    if (miss) { alertBox("Em còn "+miss+" câu chưa nói. Hãy nói xong rồi tick nhé."); return; }
-    S.done.s4 = true; save(); drawChips();
-    alertBox("Chúc mừng! Em đã hoàn thành bài học về vị trong đồ ăn. Sang bài viết về buổi đi siêu thị nhé.");
+  if (readDone()) $("sc").innerHTML = '<span class="done">✅ Em đã đạt '+S.rscore+'/'+RQ.length+'</span>';
+  $("sub").onclick = function(){
+    var miss = RQ.length - Object.keys(pick).length;
+    if (miss) { alertBox("Em còn "+miss+" câu chưa chọn."); return; }
+    var sc = 0;
+    RQ.forEach(function(q,i){
+      var ok = pick[i] === q.a; if (ok) sc++;
+      var btns = qs.children[i].querySelectorAll(".opt");
+      Array.prototype.forEach.call(btns, function(b,j){ b.disabled = true; b.classList.remove("sel"); if (j===q.a) b.classList.add("good"); else if (j===pick[i]) b.classList.add("bad"); });
+      $("x"+i).textContent = (ok ? "✅ " : "❌ ") + q.x;
+    });
+    S.tried++; S.rans = RQ.map(function(q,i){ return pick[i]; });
+    if (sc >= PASS_READ) { S.rscore = Math.max(S.rscore, sc); save(); head(); $("sc").innerHTML = '<span class="done">✅ '+sc+'/'+RQ.length+' · Đạt!</span>'; $("sub").textContent = "Sang phần ③ ▶"; $("sub").onclick = function(){ S.step = 2; save(); render(); }; }
+    else { save(); $("sc").textContent = sc+"/"+RQ.length+" · chưa đạt, em đọc lại bài rồi làm lại nhé."; $("sub").textContent = "Làm lại"; $("sub").onclick = function(){ renderRead(); }; }
   };
 }
 
-load(); render();
+/* ===== ③ ===== */
+function renderSpeak(){
+  var m = $("main"), h = '<div class="card"><h2>③ Nói: trả lời 3 câu hỏi</h2><p class="vi">Với mỗi câu: đọc câu hỏi, nói câu trả lời của em (2 đến 3 câu), nghe lại, rồi bấm gửi cho cô. Bấm ghi âm lần nữa để dừng.</p></div>';
+  SPEAK.forEach(function(s,i){
+    h += '<div class="card" id="sp'+i+'"><h2>'+(i+1)+'. '+esc(s.q)+' <button class="ghost" data-say="'+i+'">🔊</button></h2><div class="vi">'+esc(s.vi)+'</div>'+
+      '<ul class="ph">'+s.ph.map(function(p){return "<li>"+esc(p)+"</li>";}).join("")+'</ul>'+
+      '<div class="rec" id="rec'+i+'"><button class="ghost r" data-rec="'+i+'">🎙 Ghi âm</button><audio controls class="hidden" id="au'+i+'"></audio><button class="primary hidden" data-send="'+i+'">📤 Gửi cho cô</button><span id="st'+i+'" class="vi">'+(S.sent[i]?'<span class="done">✅ Đã gửi</span>':'')+'</span></div></div>';
+  });
+  h += '<div class="card"><h2>Nộp bài</h2><p class="vi">Gửi đủ 3 câu rồi bấm nộp để cô nhận tổng kết cả bài.</p><div class="row"><span id="fin" class="vi"></span><button class="primary" id="submit">Nộp bài cho cô</button></div></div>';
+  m.innerHTML = h;
+  Array.prototype.forEach.call(m.querySelectorAll("[data-say]"), function(b){ b.onclick = function(){ say(SPEAK[+b.dataset.say].q); }; });
+  Array.prototype.forEach.call(m.querySelectorAll("[data-rec]"), function(b){ b.onclick = function(){ toggleRec(+b.dataset.rec, b); }; });
+  Array.prototype.forEach.call(m.querySelectorAll("[data-send]"), function(b){ b.onclick = function(){ sendAudio(+b.dataset.send, b); }; });
+  $("submit").onclick = submitAll;
+}
+function toggleRec(i, btn){
+  if (needName()) return;
+  var box = $("rec"+i);
+  if (RECS[i] && RECS[i].state === "recording") { RECS[i].stop(); return; }
+  if (!navigator.mediaDevices || !window.MediaRecorder) { alertBox("Trình duyệt này không ghi âm được. Em hãy mở bằng Chrome hoặc Safari."); return; }
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    var chunks = [], r = new MediaRecorder(stream); RECS[i] = r;
+    r.ondataavailable = function(e){ if (e.data && e.data.size) chunks.push(e.data); };
+    r.onstop = function(){
+      stream.getTracks().forEach(function(t){ t.stop(); });
+      var blob = new Blob(chunks, {type: r.mimeType || "audio/webm"}); BLOBS[i] = blob;
+      var au = $("au"+i); au.src = URL.createObjectURL(blob); au.classList.remove("hidden");
+      box.querySelector("[data-send]").classList.remove("hidden");
+      box.classList.remove("live"); btn.textContent = "🎙 Ghi lại"; S.sent[i] = false; save(); $("st"+i).textContent = "Nghe lại, rồi bấm Gửi nhé."; head();
+    };
+    r.start(); box.classList.add("live"); btn.textContent = "⏹ Dừng";
+  }).catch(function(){ alertBox("Em cần bấm Cho phép micro trên trình duyệt để ghi âm."); });
+}
+function blobToB64(b){ return new Promise(function(res, rej){ var f = new FileReader(); f.onload = function(){ res(String(f.result).split(",")[1]); }; f.onerror = rej; f.readAsDataURL(b); }); }
+function post(o){ return fetch(SCRIPT_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(o)}).then(function(r){ return r.json(); }).then(function(j){ if (!j.ok) throw new Error(j.error||"error"); return j; }); }
+function sendAudio(i, btn){
+  if (!BLOBS[i]) return;
+  var name = $("name").value.trim(); if (!name) { needName(); return; }
+  btn.disabled = true; $("st"+i).textContent = "Đang gửi...";
+  var mime = BLOBS[i].type || "audio/webm", ext = /mp4|aac/.test(mime) ? "m4a" : /ogg/.test(mime) ? "ogg" : "webm";
+  blobToB64(BLOBS[i]).then(function(b64){
+    return post({type:"audio", name:name, lesson:LESSON, file:"Noi_0"+(i+1)+"."+ext, audio:b64, mime:mime, label:"Nói câu "+(i+1)+": "+SPEAK[i].q, target:SPEAK[i].q, transcript:""});
+  }).then(function(){ S.sent[i] = true; save(); $("st"+i).innerHTML = '<span class="done">✅ Đã gửi</span>'; btn.disabled = false; head(); })
+   .catch(function(){ btn.disabled = false; $("st"+i).textContent = "Chưa gửi được, em kiểm tra mạng rồi bấm Gửi lại."; });
+}
+function submitAll(){
+  var name = $("name").value.trim(); if (!name) { needName(); return; }
+  if (!speakDone()) { alertBox("Em cần ghi âm và gửi đủ 3 câu trả lời trước khi nộp."); return; }
+  var btn = $("submit"); btn.disabled = true; btn.textContent = "Đang gửi...";
+  var ok = S.dfirst.filter(Boolean).length;
+  var details = DICT.map(function(d,i){ return {part:"① Nghe viết", question:d.w, answer:S.dfirst[i]?"đúng ngay lần đầu":"cần nghe lại", correct:d.w, result:S.dfirst[i]?"đúng":"sai lần đầu"}; });
+  details.push({part:"② Bài đọc", question:PASSAGE_TITLE, answer:S.rscore+"/"+RQ.length, correct:"", result:"đạt (cần "+PASS_READ+")"});
+  SPEAK.forEach(function(s,i){ details.push({part:"③ Nói", question:s.q, answer:"đã gửi file ghi âm Noi_0"+(i+1), correct:"", result:"đã gửi"}); });
+  post({type:"submit", name:name, lesson:LESSON, summary:{vocab:"Nghe viết đúng ngay lần đầu: "+ok+"/"+DICT.length, gram:"", ctx:"Bài đọc: "+S.rscore+"/"+RQ.length+" (làm "+S.tried+" lần)", rec:"Đã gửi "+SPEAK.length+" bản ghi âm", para:"", feedback:""}, details:details})
+   .then(function(){ btn.textContent = "Đã nộp ✅"; alertBox("Em đã nộp bài thành công! Cô sẽ nghe và nhận xét."); })
+   .catch(function(){ btn.disabled = false; btn.textContent = "Nộp bài cho cô"; alertBox("Chưa nộp được. Em kiểm tra mạng rồi bấm lại nhé."); });
+}
+
+load();
+$("name").value = S.name || "";
+$("name").oninput = function(){ S.name = this.value; save(); };
+if (!unlocked(S.step)) S.step = 0;
+render();
 </script>
 </body>
 </html>
